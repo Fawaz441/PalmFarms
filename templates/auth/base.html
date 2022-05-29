@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="bg-lightgreen min-h-screen">
+    <div class="header flex items-center h-[80px] pl-[43px]">
+        <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+    </div>
+    <div class="content pl-[138px]">
+        {% block prompt %}
+        {% endblock prompt %}
+        <div>
+            {% block main%}
+            {% endblock main%}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,46 @@
+{% extends 'auth/base.html' %}
+{% load static %}
+{% block prompt %}
+<span class="text-white inter">Have an account ? <a class="text-primary" href="{% url 'accounts:login' %}">Sign
+        in</a></span>
+{% endblock prompt %}
+{% block main%}
+<div class="mt-8 grid grid-cols-[60%_40%] space-x-3">
+    <form method="post">
+        {% csrf_token %}
+        <h1 class="text-[48px] text-white font-goldman font-bold">Join Our Dispatch Team</h1>
+        <div class="mt-[76px] space-y-[5px]">
+            <div class="flex flex-col">
+                <label class="text-primary text-[20px]">Full Name</label>
+                <input required type="text"
+                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-primary text-[20px]">Phone Number</label>
+                <input required type="tel"
+                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-primary text-[20px]">Number Plate</label>
+                <input required type="tel"
+                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-primary text-[20px]">Location</label>
+                <input required type="tel"
+                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
+            </div>
+        </div>
+        <input
+            class="mt-[87px] h-[82px] text-white w-full mb-5 cursor-pointer items-center justify-center flex bg-primary rounded-[10px]"
+            type="submit" value="Create an account" />
+    </form>
+    <div class="flex items-center justify-center h-screen mt-[-80px]">
+        <div class="w-[500px] h-[400px] bg-white overflow-hidden"
+            style="border-radius: 250px / 200px;transform:rotate(90deg)">
+            <img src="{% static 'images/farmer1.png' %}" style="transform:rotate(-90deg);object-fit: cover;"
+                class="h-full w-full w-[500px] h-[400px] border-radius: 250px / 200px;" />
+        </div>
+    </div>
+</div>
+{% endblock main%}

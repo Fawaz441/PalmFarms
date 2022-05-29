@@ -1,0 +1,14 @@
+body{
+    background:var(--lightgreen);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+.header{
+    height:80px;
+    padding:0 45px;
+}
+
+.content{
+    padding-left: 138px;
+}

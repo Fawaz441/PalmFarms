@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Inter&display=swap"
+        rel="stylesheet">
+    <title>{% block title %}{% endblock title %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    'sans': ['Goldman', 'cursive'],
+                    'goldman': ['Goldman', 'cursive'],
+                    'inter': ['Inter', 'sans-serif']
+                },
+                extend: {
+                    colors: {
+                        lightgreen: '#B5E991',
+                        primary: '#4A7429'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    {% block content %}
+    {% endblock content %}
+</body>
+
+</html>

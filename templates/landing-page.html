@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="bg-white">
+    <div class="h-[100px] px-[30px] flex items-center justify-between border-b-[6px] border-primary">
+        <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        <div class="flex items-center space-x-8">
+            <a class="text-primary font-inter text-xl" href="#">Home</a>
+            <a class="text-primary font-inter text-xl" href="#">About Us</a>
+            <a class="text-primary font-inter text-xl" href="#">Contact Us</a>
+            <a class="text-primary font-inter text-xl" href="#">FAQ</a>
+        </div>
+        <a href="{% url 'accounts:login' %}" class="px-[39px] py-[16px] border border-primary
+            rounded-[20px] flex items-center hover:bg-primary hover:text-white transition-all
+             justify-center text-primary bg-white text-[20px]">
+            Sign in
+        </a>
+    </div>
+    <div class="items-center justify-center flex my-[47px]">
+        <img src="{% static 'images/landing-text.svg' %}"
+            alt="evolutionalizing The Farm with tech that fits the palm of your hand" />
+    </div>
+    <footer class="h-[94px] border-t-[6px] border-primary"></footer>
+</div>
+{% endblock content %}
