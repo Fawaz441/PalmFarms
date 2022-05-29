@@ -4,7 +4,7 @@
 <span class="text-white inter">Have an account ? <a class="text-primary" href="{% url 'accounts:login' %}">Sign
         in</a></span>
 {% endblock prompt %}
-{% block main%}
+{% block main %}
 <div class="mt-8 grid grid-cols-[60%_40%]">
     <div>
         <h1 class="text-[48px] text-white font-goldman font-bold">Welcome To PalmFarms</h1>
@@ -13,14 +13,10 @@
             <p class="mt-10 text-primary text-[20px] font-goldman">Sign up as: </p>
         </div>
         <div class="mt-[86px]">
-            <a href="{% url 'accounts:signup' %}" class="w-full h-[112px] max-w-[500px] bg-primary flex items-center
-                 justify-center text-white font-goldman text-[48px] rounded-[10px]">Retailer</a>
-            <a href="{% url 'accounts:signup' %}" class="w-full h-[112px] max-w-[500px] mt-[62px] bg-primary flex items-center
-                 justify-center text-white font-goldman text-[48px] rounded-[10px]">Farmer</a>
-            <a href="{% url 'accounts:signup' %}" class="w-full h-[112px] max-w-[500px] mt-[62px] bg-primary flex items-center
-                 justify-center text-white font-goldman text-[48px] rounded-[10px]">Dispatch Rider</a>
-            <a href="{% url 'accounts:signup' %}" class="w-full h-[112px] max-w-[500px] mt-[62px] mb-[51px] bg-primary flex items-center
-                 justify-center text-white font-goldman text-[48px] rounded-[10px]">Investor</a>
+            {% for type in user_types %}
+            <a href="{% url 'accounts:signup' type %}" class="w-full h-[112px] max-w-[500px] bg-primary flex items-center
+                 justify-center text-white font-goldman text-[48px] rounded-[10px] mb-[62px]">{{type}}</a>
+            {% endfor %}
         </div>
     </div>
     <div class="flex items-center justify-center h-screen mt-[-80px]">
@@ -31,4 +27,4 @@
         </div>
     </div>
 </div>
-{% endblock main%}
+{% endblock main %}

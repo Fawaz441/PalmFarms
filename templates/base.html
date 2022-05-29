@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Inter&display=swap"
         rel="stylesheet">
     <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -35,6 +37,18 @@
 <body>
     {% block content %}
     {% endblock content %}
+    {% for message in messages %}
+    <span class="message hidden">{{message}}</span>
+    {% endfor %}
 </body>
+<script>
+    let messages = document.querySelectorAll(".message")
+    messages.forEach(message => {
+        Toastify({
+            text: message.innerText,
+            duration: 3000
+        }).showToast();
+    })
+</script>
 
 </html>

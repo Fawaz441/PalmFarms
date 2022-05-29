@@ -10,16 +10,12 @@
             <h1 class="text-[48px] text-white font-bold">WELCOME</h1>
             <h1 class="text-[48px] text-primary font-bold">BACK</h1>
             <div class="mt-[76px] space-y-[5px]">
+                {% for field in form %}
                 <div class="flex flex-col">
-                    <label class="text-primary text-[20px]">Surname</label>
-                    <input required type="text"
-                        class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
+                    <label class="text-primary text-[20px]">{{field.label}}</label>
+                    {{field}}
                 </div>
-                <div class="flex flex-col">
-                    <label class="text-primary text-[20px]">Phone Number</label>
-                    <input required type="tel"
-                        class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
-                </div>
+                {% endfor %}
                 <div class="flex justify-between w-full">
                     <div class="flex items-center">
                         <input type="checkbox" name="remember" id="remember" />
@@ -33,7 +29,7 @@
                 type="submit" value="Sign In" />
         </form>
         <div class="w-full items-center flex justify-center mb-5">
-            <span class="text-[24px] text-white">Don’t have an account? <a href="{% url 'landing-page' %}"
+            <span class="text-[24px] text-white">Don’t have an account? <a href="{% url 'accounts:pre-signup' %}"
                     class="text-primary">Sign Up</a></span>
         </div>
     </div>

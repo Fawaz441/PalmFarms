@@ -8,28 +8,14 @@
 <div class="mt-8 grid grid-cols-[60%_40%] space-x-3">
     <form method="post">
         {% csrf_token %}
-        <h1 class="text-[48px] text-white font-goldman font-bold">Join Our Dispatch Team</h1>
+        <h1 class="text-[48px] text-white font-goldman font-bold">{{title}}</h1>
         <div class="mt-[76px] space-y-[5px]">
+            {% for field in form %}
             <div class="flex flex-col">
-                <label class="text-primary text-[20px]">Full Name</label>
-                <input required type="text"
-                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
+                <label class="text-primary text-[20px]">{{field.label}}</label>
+                {{field}}
             </div>
-            <div class="flex flex-col">
-                <label class="text-primary text-[20px]">Phone Number</label>
-                <input required type="tel"
-                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
-            </div>
-            <div class="flex flex-col">
-                <label class="text-primary text-[20px]">Number Plate</label>
-                <input required type="tel"
-                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
-            </div>
-            <div class="flex flex-col">
-                <label class="text-primary text-[20px]">Location</label>
-                <input required type="tel"
-                    class="bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]">
-            </div>
+            {% endfor %}
         </div>
         <input
             class="mt-[87px] h-[82px] text-white w-full mb-5 cursor-pointer items-center justify-center flex bg-primary rounded-[10px]"
