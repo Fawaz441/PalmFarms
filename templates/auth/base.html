@@ -3,7 +3,9 @@
 {% block content %}
 <div class="bg-lightgreen min-h-screen">
     <div class="header flex items-center h-[80px] pl-[43px]">
-        <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        <a href="{% url 'landing-page' %}">
+            <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        </a>
     </div>
     <div class="content pl-[138px]">
         {% block prompt %}

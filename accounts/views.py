@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login
 from django.contrib import messages
 
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
@@ -30,7 +32,7 @@ class SignupView(View):
         elif type == DISPATCH_RIDER:
             form = DispatchRiderForm
             title = "Join Our Dispatch Team"
-        context = {'form': form, 'title': title}
+        context = {'form': form, 'title': title, 'type': type}
         return render(request, 'auth/signup.html', context)
 
     def post(self, request, type):
@@ -66,13 +68,19 @@ class LoginView(View):
             surname = form.cleaned_data.get("surname")
             phone_number = form.cleaned_data.get("phone_number")
             user = User.objects.filter(
-                surname__iexact=surname, phone_number=phone_number).exists()
+                surname__iexact=surname, phone_number=phone_number).first()
             if user:
                 messages.success(request, 'Login successful')
-                return HttpResponse("login successful")
+                login(request, user)
+                return redirect('accounts:dashboard')
             else:
                 messages.error(request, 'Invalid credentials')
                 return redirect(request.META.get('HTTP_REFERER'))
         else:
             messages.error(request, form.errors.as_text())
             return redirect(request.META.get('HTTP_REFERER'))
+
+
+class DashboardView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'pages/dashboard.html')

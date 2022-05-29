@@ -24,8 +24,16 @@
     <div class="flex items-center justify-center h-screen mt-[-80px]">
         <div class="w-[500px] h-[400px] bg-white overflow-hidden"
             style="border-radius: 250px / 200px;transform:rotate(90deg)">
+            {% if type == 'FARMER' %}
             <img src="{% static 'images/farmer1.png' %}" style="transform:rotate(-90deg);object-fit: cover;"
                 class="h-full w-full w-[500px] h-[400px] border-radius: 250px / 200px;" />
+            {% elif type == 'RETAILER' %}
+            <img src="{% static 'images/retailer.png' %}" style="transform:rotate(-90deg);object-fit: cover;"
+                class="h-full w-full w-[500px] h-[400px] border-radius: 250px / 200px;" />
+            {% elif type == 'DISPATCH RIDER' %}
+            <img src="{% static 'images/dispatch_rider.png' %}" style="transform:rotate(-90deg);object-fit: cover;"
+                class="h-full w-full w-[500px] h-[400px] border-radius: 250px / 200px;" />
+            {% endif %}
         </div>
     </div>
 </div>
