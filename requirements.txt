@@ -3,7 +3,7 @@ autopep8==1.6.0
 certifi==2022.5.18.1
 charset-normalizer==2.0.12
 dj-database-url==0.5.0
-Django==4.0.4
+Django==3.2.12
 django-dotenv==1.4.2
 django-heroku==0.3.1
 django-phonenumber-field==6.1.0
@@ -13,6 +13,7 @@ phonenumbers==8.12.49
 Pillow==9.1.1
 psycopg2==2.9.3
 pycodestyle==2.8.0
+pytz==2022.1
 requests==2.27.1
 sqlparse==0.4.2
 toml==0.10.2
