@@ -7,7 +7,7 @@ from django.contrib import messages
 
 from accounts.mixins import FarmerMixin, UnAuthenticatedUserMixin
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
-from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, User, get_surname_from_full_name
+from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, Farm, User, get_surname_from_full_name
 
 user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR]
 
@@ -51,6 +51,11 @@ class SignupView(UnAuthenticatedUserMixin, View):
             new_user.user_type = type
             new_user.surname = get_surname_from_full_name(new_user.full_name)
             new_user.save()
+            if(type == FARMER):
+                Farm.objects.create(
+                    name=f'{new_user.full_name} Farmers',
+                    farmer=new_user
+                )
             messages.success(request, "Sign up successful")
             return redirect("accounts:login")
         else:
