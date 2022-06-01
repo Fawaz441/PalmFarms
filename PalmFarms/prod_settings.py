@@ -2,7 +2,7 @@ from .settings import *
 import django_heroku
 
 ALLOWED_HOSTS = ['palmfarms.herokuapp.com']
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     'default': {
