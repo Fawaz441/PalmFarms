@@ -1,0 +1,1 @@
+web: gunicorn PalmFarms.wsgi --log-file -
