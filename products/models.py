@@ -1,5 +1,4 @@
 from operator import mod
-from tkinter import CASCADE
 from django.db import models
 from accounts.models import User, Farm
 
