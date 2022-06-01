@@ -4,3 +4,4 @@ design/
 **/__pycache__
 *.sqlite3
 media/
+.env

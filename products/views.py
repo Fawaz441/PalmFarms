@@ -19,7 +19,7 @@ class AddProductView(FarmerMixin, View):
         form = ProductForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             data = form.save(commit=False)
-            data.owner = request.user
+            data.farm = Farm.objects.filter(farmer=request.user).first()
             data.save()
             messages.success(request, "Product created successfully")
             return redirect(request.META.get("HTTP_REFERER"))
