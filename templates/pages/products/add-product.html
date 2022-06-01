@@ -1,0 +1,24 @@
+{% extends 'pages/base.html' %}
+{% block content %}
+{% block sidebar %}
+{{block.super}}
+{% endblock sidebar %}
+{% block main_content %}
+<div class="h-full bg-white px-[54px] ml-[342px] pt-[37px] flex items-center justify-center">
+    <form class="max-w-[504px] flex flex-col " method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="bg-white px-[40px] py-5 border-[2px] border-primary rounded-lg shadow-lg shadow-black-500/50">
+            {% for field in form %}
+            <div class="flex-col">
+                <label class="font-inter text-primary font-bold text-2xl mb-[33px]">{{field.label}}</label>
+                {{field}}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="ml-auto mt-[15px]">
+            <input type="submit" value="Save Changes" class="bg-primary text-white p-[20px] rounded-lg" />
+        </div>
+</div>
+</div>
+{% endblock main_content %}
+{% endblock content %}

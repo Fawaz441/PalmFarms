@@ -22,22 +22,24 @@ def get_surname_from_full_name(full_name):
 
 
 class UserManager(BaseUserManager):
-    def create_superuser(self, phone_number, full_name):
+    def create_superuser(self, phone_number, full_name, password):
         user = self.create_user(
             phone_number=phone_number,
             full_name=full_name,
         )
         user.is_superuser = True
         user.is_staff = True
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_user(self, phone_number, full_name, **fields):
+        print(phone_number, full_name)
         user = User.objects.create(
             phone_number=phone_number,
             full_name=full_name,
-            surname=get_surname_from_full_name(full_name)
-            ** fields
+            surname=get_surname_from_full_name(full_name),
+            **fields
         )
         return user
 
@@ -70,5 +72,29 @@ class User(AbstractBaseUser, PermissionsMixin):
     def first_name(self):
         return self.full_name.split()[0]
 
+    @property
+    def is_farmer(self):
+        return self.user_type == FARMER
+
+    @property
+    def is_retailer(self):
+        return self.user_type == PALM_RETAILER
+
     def __str__(self):
         return self.full_name
+
+
+class Farm(models.Model):
+    name = models.CharField(max_length=200)
+    farmer = models.ForeignKey(
+        User, related_name='farms', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def sample_products(self):
+        return self.farm_products.all()[:5]

@@ -42,14 +42,28 @@
     <span class="message hidden">{{message}}</span>
     {% endfor %}
 </body>
+<script src="{% static 'js/jquery.min.js' %}"></script>
 <script>
     let messages = document.querySelectorAll(".message")
-    messages.forEach(message => {
+    let toast = (message, isError) => {
         Toastify({
-            text: message.innerText,
-            duration: 3000
+            text: message,
+            duration: 3000,
+            ...isError && {
+                style: {
+                    background: "red",
+                }
+            },
         }).showToast();
+    }
+
+    messages.forEach(message => {
+        toast(message.innerText)
     })
+
 </script>
+{% block scripts %}
+{% endblock scripts %}
+
 
 </html>

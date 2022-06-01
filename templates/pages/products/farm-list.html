@@ -1,0 +1,66 @@
+{% extends 'pages/products/list-base.html' %}
+{% block title %}
+Farms
+{% endblock title %}
+{% block list_content %}
+<div class="flex-col">
+    <div class="h-[100px] flex overflow-x-scroll border-b-[2px] border-primary justify-end">
+        {% for producttype in producttypes %}
+        <a href="?category={{producttype.id}}"
+            class="border-l border-r border-primary p-3 text-primary flex items-center justify-center">
+            <span class="text-4xl">{{producttype.name}}</span>
+        </a>
+        {% endfor %}
+    </div>
+    <div class="w-full" style="min-height:calc(100vh - 300px)">
+        <div class="justify-between items-center w-full flex p-5">
+            <span class="text-primary text-2xl">Farms</span>
+            <a class="bg-primary p-3 text-white rounded-lg">Checkout</a>
+        </div>
+        <div class="px-5 flex space-x-[30px] overflow-x-scroll">
+            {% for product in products %}
+            <div class="rounded-lg bg-primary py-4 px-[25px] flex-col max-w-[270px] items-center">
+                <div class="h-[192px] w-[220px] overflow-hidden rounded-[20px]">
+                    <img src="{{product.image.url}}" style="object-fit:cover" class="h-full w-full" />
+                </div>
+                <div class="mt-[21px]">
+                    <p class="text-white font-inter text-[20px]">Category: {{product.type.name}}</p>
+                    <p class="text-white font-inter text-[20px] mt-[9px]">Name: {{farm.name}}</p>
+                    <p class="text-white font-inter text-[20px] mt-[9px]">Rating: {{product.rating}}</p>
+                </div>
+                <div class="mt-[25px] flex justify-center items-center">
+                    <a class="items-center justify-center bg-white text-primary text-2xl p-3">
+                        Shop Now
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="mt-auto h-[100px] flex overflow-x-scroll border-[2px] border-primary justify-center">
+        <div class="step-links flex">
+            {% if page_obj.has_previous %}
+            <!-- <a href="?page=1">&laquo; first</a> -->
+            <a class="border border-primary p-6 text-primary flex justify-center items-center"
+                href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            {% for page in page_obj.paginator.page_range %}
+            {% if page != 1 %}
+            <a class="border border-primary p-6 flex text-primary justify-center items-center {% if page == page_obj.number %}h-[30px] w-[30px] rounded-[15px] text-white bg-primary self-center {% endif %}"
+                href="?page={{page}}">{{page}}</a>
+            {% endif %}
+            {% endfor %}
+
+            <!-- <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span> -->
+
+            {% if page_obj.has_next %}
+            <a class="border border-primary p-6 flex text-primary justify-center items-center"
+                href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock list_content %}

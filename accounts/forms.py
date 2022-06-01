@@ -15,6 +15,8 @@ class UserLoginForm(Form):
                 'class': 'bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]'
             })
 
+        self.fields['surname'].widget.attrs.update({'autofocus': 'on'})
+
 
 class PalmRetailerOrFarmerForm(ModelForm):
     class Meta:
@@ -27,6 +29,7 @@ class PalmRetailerOrFarmerForm(ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]'
             })
+            self.fields[field].required = True
 
 
 class DispatchRiderForm(ModelForm):
@@ -40,3 +43,4 @@ class DispatchRiderForm(ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]'
             })
+            self.fields[field].required = True

@@ -1,7 +1,14 @@
 asgiref==3.5.2
 autopep8==1.6.0
+certifi==2022.5.18.1
+charset-normalizer==2.0.12
 Django==4.0.4
 django-phonenumber-field==6.1.0
+idna==3.3
+phonenumbers==8.12.49
+Pillow==9.1.1
 pycodestyle==2.8.0
+requests==2.27.1
 sqlparse==0.4.2
 toml==0.10.2
+urllib3==1.26.9

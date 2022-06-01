@@ -2,22 +2,23 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib import messages
 
+from accounts.mixins import FarmerMixin, UnAuthenticatedUserMixin
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
 from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, User, get_surname_from_full_name
 
 user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR]
 
 
-class PreSignupView(View):
+class PreSignupView(UnAuthenticatedUserMixin, View):
     def get(self, request):
         context = {'user_types': user_types}
         return render(request, 'auth/pre-signup.html', context)
 
 
-class SignupView(View):
+class SignupView(UnAuthenticatedUserMixin, View):
     def get(self, request, type):
         if not type in user_types:
             return redirect('accounts:pre-signup')
@@ -57,7 +58,7 @@ class SignupView(View):
             return redirect(request.META.get('HTTP_REFERER'))
 
 
-class LoginView(View):
+class LoginView(UnAuthenticatedUserMixin, View):
     def get(self, request):
         form = UserLoginForm()
         return render(request, "auth/login.html", context={'form': form})
@@ -72,7 +73,7 @@ class LoginView(View):
             if user:
                 messages.success(request, 'Login successful')
                 login(request, user)
-                return redirect('accounts:dashboard')
+                return redirect('accounts:user-view')
             else:
                 messages.error(request, 'Invalid credentials')
                 return redirect(request.META.get('HTTP_REFERER'))
@@ -81,6 +82,22 @@ class LoginView(View):
             return redirect(request.META.get('HTTP_REFERER'))
 
 
-class DashboardView(LoginRequiredMixin, View):
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect("accounts:login")
+
+
+class DashboardView(FarmerMixin, View):
     def get(self, request):
         return render(request, 'pages/dashboard.html')
+
+
+class UserSpecificView(LoginRequiredMixin, View):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect("accounts:login")
+        if request.user.is_farmer:
+            return redirect("accounts:dashboard")
+        else:
+            return redirect("products:farms")
