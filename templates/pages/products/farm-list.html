@@ -15,7 +15,7 @@ Farms
     <div class="w-full" style="min-height:calc(100vh - 300px)">
         <div class="justify-between items-center w-full flex p-5">
             <span class="text-primary text-2xl">Farms</span>
-            <a class="bg-primary p-3 text-white rounded-lg">Checkout</a>
+            <a class="bg-primary p-3 text-white rounded-lg" href="{% url 'products:checkout' %}">Checkout</a>
         </div>
         <div class="px-5 flex space-x-[30px] overflow-x-scroll">
             {% for product in products %}
@@ -25,11 +25,14 @@ Farms
                 </div>
                 <div class="mt-[21px]">
                     <p class="text-white font-inter text-[20px]">Category: {{product.type.name}}</p>
-                    <p class="text-white font-inter text-[20px] mt-[9px]">Name: {{farm.name}}</p>
+                    <p class="text-white font-inter text-[20px] mt-[9px]">Name: {{product.farm.name}}</p>
+                    {% if product.rating %}
                     <p class="text-white font-inter text-[20px] mt-[9px]">Rating: {{product.rating}}</p>
+                    {% endif %}
                 </div>
-                <div class="mt-[25px] flex justify-center items-center">
-                    <a class="items-center justify-center bg-white text-primary text-2xl p-3">
+                <div class="mt-auto pt-2 flex justify-center items-center">
+                    <a class="items-center justify-center bg-white text-primary text-2xl p-3"
+                        href="{% url 'products:add-to-cart' product.id %}">
                         Shop Now
                     </a>
                 </div>

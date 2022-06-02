@@ -1,0 +1,15 @@
+{% for payment in payments %}
+<!-- Use a white background for odd rows, and slate-100 for even rows -->
+<tr class="odd:bg-white even:bg-slate-100 !w-full">
+    <td class="p-3">{{payment.timestamp}}</td>
+    <td class="p-3">{{payment.customer}}</td>
+    <td class="p-3">{{payment.amount}}</td>
+    <td class="p-3">{{payment.status}}</td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4" class="h-[400px] bg-white">
+        <p class="text-grey text-center text-2xl">No payments yet.</p>
+    </td>
+</tr>
+{% endfor %}

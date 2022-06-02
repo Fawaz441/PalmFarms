@@ -8,6 +8,7 @@ from django.contrib import messages
 from accounts.mixins import FarmerMixin, UnAuthenticatedUserMixin
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
 from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, Farm, User, get_surname_from_full_name
+from products.models import Product, Cart
 
 user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR]
 
@@ -74,7 +75,7 @@ class LoginView(UnAuthenticatedUserMixin, View):
             surname = form.cleaned_data.get("surname")
             phone_number = form.cleaned_data.get("phone_number")
             user = User.objects.filter(
-                surname__iexact=surname, phone_number=phone_number).first()
+                full_name__icontains=surname, phone_number=phone_number).first()
             if user:
                 messages.success(request, 'Login successful')
                 login(request, user)
@@ -95,7 +96,18 @@ class LogoutView(View):
 
 class DashboardView(FarmerMixin, View):
     def get(self, request):
-        return render(request, 'pages/dashboard.html')
+        total_products = Product.objects.filter(
+            available_stock__gt=0, farm__farmer=request.user).count()
+        orders = Cart.objects.filter(
+            user__isnull=False, items__product__farm__farmer=request.user)
+        print(orders)
+        total_customers = orders.distinct('user_id').values('user_id').count()
+        online_orders = orders.filter(delivered=False).count()
+        context = {'total_products': total_products,
+                   'total_customers': total_customers,
+                   'online_orders': online_orders
+                   }
+        return render(request, 'pages/dashboard.html', context)
 
 
 class UserSpecificView(LoginRequiredMixin, View):

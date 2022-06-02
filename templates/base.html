@@ -44,6 +44,7 @@
 </body>
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script>
+    const loaderHTML = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`
     let messages = document.querySelectorAll(".message")
     let toast = (message, isError) => {
         Toastify({
