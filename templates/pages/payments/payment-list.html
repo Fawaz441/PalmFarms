@@ -1,0 +1,61 @@
+{% extends 'pages/products/list-base.html' %}
+{% block title %}
+Payments
+{% endblock title %}
+{% block list_content %}
+<div class="flex-col bg-[#94E56D]/[0.75] p-[100px]" style="min-height: calc(100vh - 100px)">
+    <h5 class="text-primary text-4xl font-inter text-bold">Payment History</h5>
+    <div class="flex items-center mt-5 space-x-3">
+        <select name="month"
+            class="font-inter mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-primary block rounded-md sm:text-sm focus:ring-1">
+            {% for month in months %}
+            <option "{% if month.value == current_month %} selected {% endif %}" value="{{month.value}}">{{month.label}}
+            </option>
+            {% endfor %}
+        </select>
+        <select name="year"
+            class="font-inter mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-primary block rounded-md sm:text-sm focus:ring-1">
+            {% for year in years %}
+            <option "{% if year == current_year %} selected {% endif %}" value="{{year}}">{{year}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mt-5 w-full">
+        <table class="w-full font-inter">
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-slate-900">
+                        Payment period
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-slate-900">
+                        Name
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-slate-900">
+                        Amount
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-slate-900">
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="!w-full">
+                {% for payment in payments %}
+                <!-- Use a white background for odd rows, and slate-100 for even rows -->
+                <tr class="odd:bg-white even:bg-slate-100 !w-full">
+                    <td>{payment.timestamp}</td>
+                    <td>{payment.customer}</td>
+                    <td>{payment.amount}</td>
+                    <td>{payment.status}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="h-[400px] bg-white">
+                        <p class="text-grey text-center text-2xl">No payments yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock list_content %}

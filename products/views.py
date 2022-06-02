@@ -4,9 +4,19 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views.generic import View, ListView
+from django.utils.dates import MONTHS
+from django.utils.timezone import now
 
 from .forms import ProductForm
-from .models import Product, ProductType
+from .models import Payment, Product, ProductType
+
+
+def get_years():
+    today = now()
+    years = []
+    for year in range(today.year, today.year-5, -1):
+        years.append(year)
+    return years
 
 
 class AddProductView(FarmerMixin, View):
@@ -56,3 +66,33 @@ class ProductListView(LoginRequiredMixin, ListView):
             return ["pages/products/farm-list.html"]
         else:
             return ["pages/products/product-list.html"]
+
+
+class PaymentListView(LoginRequiredMixin, ListView):
+    model = Payment
+    template_name = "pages/payments/payment-list.html"
+    context_object_name = "payments"
+
+    def get_current_time(self):
+        today = now()
+        return {'month': today.month, 'year': today.year}
+
+    def get_queryset(self):
+        user = self.request.user
+        time = self.get_current_time()
+        if user.is_farmer:
+            return Payment.objects.filter(farmer=user, timestamp__year=time['year'], timestamp__month=time['month'])
+        return Payment.objects.filter(customer=user, timestamp__year=time['year'], timestamp__month=time['month'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        months = []
+        now = self.get_current_time()
+        month_keys = list(MONTHS.keys())
+        for key in month_keys:
+            months.append({'value': key, 'label': MONTHS[key]})
+        context['months'] = months
+        context['years'] = get_years()
+        context['current_month'] = now['month']
+        context['current_year'] = now['year']
+        return context
