@@ -46,7 +46,7 @@ class CartProduct(models.Model):
 
 
 class Cart(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User, related_name='basket', on_delete=models.SET_NULL, null=True, blank=True)
     items = models.ManyToManyField(CartProduct, blank=True)
     requires_dispatch = models.BooleanField(default=False)
