@@ -1,4 +1,5 @@
 {% extends 'pages/products/list-base.html' %}
+{% load humanize %}
 {% block title %}
 Products
 {% endblock title %}
@@ -21,10 +22,12 @@ Products
                 <div class="h-[192px] w-[220px] overflow-hidden rounded-[20px]">
                     <img src="{{product.image.url}}" style="object-fit:cover" class="h-full w-full" />
                 </div>
-                <div class="mt-[21px] mb-[25px]">
-                    <p class="text-white font-inter text-[20px]">Category: {{product.type.name}}</p>
-                    <p class="text-white font-inter text-[20px] mt-[9px]">Name: {{farm.name}}</p>
-                    <p class="text-white font-inter text-[20px] mt-[9px]">Rating: {{product.rating}}</p>
+                <div class="mt-[21px] mb-[25px] flex flex-col items-center">
+                    <p class="text-white font-inter text-[20px] mt-[9px]">{{product.name}}</p>
+                    <p class="text-white font-inter text-[20px] mt-[9px]">
+                        &#8358;{{product.selling_price|floatformat:2|intcomma}}
+                    </p>
+
                 </div>
                 <div class="mt-auto flex justify-between items-center bg-white p-4 rounded-lg transition-all">
                     <a class="text-primary text-2xl plus" href="#" data-id="{{product.id}}">
@@ -78,7 +81,6 @@ Products
             }
         })
     }
-    const loaderHTML = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`
     $("a.plus").each(function (index) {
         $(this).click(() => {
             let id = $(this).attr("data-id")

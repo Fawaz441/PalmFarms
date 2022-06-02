@@ -21,3 +21,8 @@ class ProductForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'bg-[#94E56D]/[0.69] rounded-lg h-[58px] w-full p-3 text-3xl mb-2'
             })
+
+
+class BankPaymentConfirmationForm(forms.Form):
+    amount = forms.DecimalField()
+    order = forms.IntegerField()

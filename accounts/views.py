@@ -8,7 +8,7 @@ from django.contrib import messages
 from accounts.mixins import FarmerMixin, UnAuthenticatedUserMixin
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
 from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, Farm, User, get_surname_from_full_name
-from products.models import Product, Order
+from products.models import Product, Cart
 
 user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR]
 
@@ -98,9 +98,10 @@ class DashboardView(FarmerMixin, View):
     def get(self, request):
         total_products = Product.objects.filter(
             available_stock__gt=0, farm__farmer=request.user).count()
-        orders = Order.objects.filter(
-            customer__isnull=False, items__product__farm__farmer=request.user)
-        total_customers = orders.values('customer_id').count()
+        orders = Cart.objects.filter(
+            user__isnull=False, items__product__farm__farmer=request.user)
+        print(orders)
+        total_customers = orders.distinct('user_id').values('user_id').count()
         online_orders = orders.filter(delivered=False).count()
         context = {'total_products': total_products,
                    'total_customers': total_customers,
