@@ -38,11 +38,7 @@ Payments
                     </th>
                 </tr>
             </thead>
-<<<<<<< HEAD
             <tbody class="!w-full" id="table">
-=======
-            <tbody class="!w-full">
->>>>>>> main
                 {% include 'pages/payments/payment-list-rows.html' %}
             </tbody>
         </table>
@@ -51,7 +47,6 @@ Payments
 {% endblock list_content %}
 {% block scripts %}
 <script>
-<<<<<<< HEAD
     const url = "{% url 'ajax:products:get_payments' %}"
     const monthSelect = $("select[name='month']")
     const yearSelect = $("select[name='year']")
@@ -82,8 +77,5 @@ Payments
     yearSelect.on("change", ({ target: { value } }) => {
         getData(monthSelect.val(), value)
     })
-=======
-
->>>>>>> main
 </script>
 {% endblock scripts %}
