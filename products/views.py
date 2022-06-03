@@ -5,10 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views.generic import View, ListView
-from django.utils.dates import MONTHS
 from django.utils.timezone import now
 
-from products.utils import confirm_bank_payment
+from products.utils import confirm_bank_payment, get_months_options
 
 from .forms import BankPaymentConfirmationForm, ProductForm
 from .models import Payment, Product, ProductType, Cart, CartProduct
@@ -91,11 +90,8 @@ class PaymentListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        months = []
+        months = get_months_options()
         now = self.get_current_time()
-        month_keys = list(MONTHS.keys())
-        for key in month_keys:
-            months.append({'value': key, 'label': MONTHS[key]})
         context['months'] = months
         context['years'] = get_years()
         context['current_month'] = now['month']

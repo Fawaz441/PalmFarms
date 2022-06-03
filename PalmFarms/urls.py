@@ -10,7 +10,7 @@ urlpatterns = [
     path('', LandingPage.as_view(), name='landing-page'),
     path('', include(('products.urls', 'products'))),
     path('accounts/', include(('accounts.urls', 'accounts'))),
-    path('ajax/products/', include(('ajax.products.urls', 'ajax_products')))
+    path('ajax/', include(('ajax.urls', 'ajax')))
 ]
 
 if settings.DEBUG:

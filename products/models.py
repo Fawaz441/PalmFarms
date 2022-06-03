@@ -57,6 +57,7 @@ class Cart(models.Model):
     ordered = models.BooleanField(default=False)
     farmer = models.ForeignKey(
         User, on_delete=models.SET_NULL, blank=True, null=True)
+    ordered_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         if self.user:
