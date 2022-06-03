@@ -1,3 +1,9 @@
+from .models import Payment, Product, ProductType, Cart, CartProduct
+from .forms import BankPaymentConfirmationForm, ProductForm
+from products.utils import confirm_bank_payment
+from django.utils.dates import MONTHS
+from products.utils import confirm_bank_payment, get_months_options
+from django.utils.timezone import now
 from email import message
 from accounts.mixins import FarmerMixin
 from accounts.models import Farm
@@ -5,12 +11,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views.generic import View, ListView
-from django.utils.timezone import now
-
-from products.utils import confirm_bank_payment, get_months_options
-
-from .forms import BankPaymentConfirmationForm, ProductForm
-from .models import Payment, Product, ProductType, Cart, CartProduct
 
 
 def get_years():
