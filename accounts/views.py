@@ -4,11 +4,13 @@ from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login, logout
 from django.contrib import messages
+from django.utils import timezone
 
 from accounts.mixins import FarmerMixin, UnAuthenticatedUserMixin
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
 from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, Farm, User, get_surname_from_full_name
 from products.models import Product, Cart
+from products.utils import get_months_options
 
 user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR]
 
@@ -100,12 +102,15 @@ class DashboardView(FarmerMixin, View):
             available_stock__gt=0, farm__farmer=request.user).count()
         orders = Cart.objects.filter(
             user__isnull=False, items__product__farm__farmer=request.user)
-        print(orders)
         total_customers = orders.distinct('user_id').values('user_id').count()
         online_orders = orders.filter(delivered=False).count()
+        months = get_months_options()
+        current_month = timezone.now().month
         context = {'total_products': total_products,
                    'total_customers': total_customers,
-                   'online_orders': online_orders
+                   'online_orders': online_orders,
+                   'months': months,
+                   'current_month': current_month
                    }
         return render(request, 'pages/dashboard.html', context)
 

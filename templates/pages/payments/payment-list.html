@@ -38,7 +38,11 @@ Payments
                     </th>
                 </tr>
             </thead>
+<<<<<<< HEAD
+            <tbody class="!w-full" id="table">
+=======
             <tbody class="!w-full">
+>>>>>>> main
                 {% include 'pages/payments/payment-list-rows.html' %}
             </tbody>
         </table>
@@ -47,6 +51,39 @@ Payments
 {% endblock list_content %}
 {% block scripts %}
 <script>
+<<<<<<< HEAD
+    const url = "{% url 'ajax:products:get_payments' %}"
+    const monthSelect = $("select[name='month']")
+    const yearSelect = $("select[name='year']")
 
+    const getData = (month, year) => {
+        $('#table').empty()
+        $('#table').append(
+            `<td colspan="4" class="h-[400px] bg-white">
+            <div class="flex items-center justify-center">${loaderHTML}</div>
+            </td>`
+        )
+        $.ajax({
+            type: "GET",
+            url,
+            success: ({ data }) => {
+                $('#table').empty()
+                $('#table').append(data)
+            },
+            data: { month, year },
+            error: response => {
+                $('#table').empty()
+            }
+        })
+    }
+    monthSelect.on("change", ({ target: { value } }) => {
+        getData(value, yearSelect.val())
+    })
+    yearSelect.on("change", ({ target: { value } }) => {
+        getData(monthSelect.val(), value)
+    })
+=======
+
+>>>>>>> main
 </script>
 {% endblock scripts %}

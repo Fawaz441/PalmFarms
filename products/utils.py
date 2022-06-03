@@ -1,6 +1,16 @@
 from random import choice
 import string
+from django.utils.dates import MONTHS
+from django.utils import timezone
 from products.models import Payment
+
+
+def get_months_options():
+    months = []
+    month_keys = list(MONTHS.keys())
+    for key in month_keys:
+        months.append({'value': key, 'label': MONTHS[key]})
+    return months
 
 
 def generate_reference():
@@ -13,6 +23,7 @@ def generate_reference():
 def confirm_bank_payment(order, amount, reference=None):
     order.delivery_address = "Just a random address"
     order.ordered = True
+    order.ordered_date = timezone.now()
     order.save()
     order.refresh_from_db()
     Payment.objects.create(

@@ -1,5 +1,7 @@
 {% extends 'pages/base.html' %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/heatmap.css' %}">
 {% block sidebar %}
 {{block.super}}
 {% endblock sidebar %}
@@ -31,8 +33,30 @@
         </div>
     </div>
     <div class="my-8 flex space-x-5 w-full">
-        <div class="h-[300px] w-full bg-primary"></div>
-        <div class="h-[300px] w-full bg-primary"></div>
+        <div class="h-[400px] w-full">
+            <div class="flex w-full justify-between items-center">
+                <h1 class="text-2xl font-italiana text-primary">Sales Overview</h1>
+                <select id="sales-time-select" class="p-2 bg-[#B5E991] rounded-lg focus:outline-none font-italiana">
+                    <option value="month">Monthly</option>
+                    <option value="year">Yearly</option>
+                </select>
+            </div>
+            <canvas id="sales-bar-chart" class="mt-2"></canvas>
+        </div>
+        <div class="h-[400px] w-full">
+            <div class="flex w-full justify-between items-center">
+                <h1 class="text-2xl font-italiana text-primary">Sales Per Week</h1>
+                <select id="sales-week-select" class="p-2 bg-[#B5E991] rounded-lg focus:outline-none font-italiana">
+                    {% for month in months %}
+                    <option "{% if month.value == current_month %} selected {% endif %}" value={{month.value}}>
+                        {{month.label}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mt-2 overflow-x-scroll w-full" id="heatmap">
+
+            </div>
+        </div>
     </div>
     <div class="mt-5">
         <span class="text-primary text-2xl font-italiana mb-[9px]">Track Order</span>
@@ -85,3 +109,84 @@
 </div>
 {% endblock main_content %}
 {% endblock content %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/heatmap.js' %}"></script>
+<script>
+    const salesUrl = "{% url 'ajax:products:get_sales' %}"
+    const currentMonth = Number("{{current_month}}")
+    let salesBarChart;
+    let salesBarChartLabels = []
+    let salesBarChartData = []
+
+    const getSales = (type) => {
+        $.ajax({
+            type: "GET",
+            url: salesUrl,
+            data: { type },
+            success: ({ data }) => {
+                salesBarChartLabels = Object.keys(data);
+                salesBarChartData = Object.values(data);
+                const chartData = {
+                    labels: salesBarChartLabels,
+                    datasets: [{
+                        label: '',
+                        backgroundColor: salesBarChartData.map(instance => instance > 5 ? 'rgba(181, 233, 145, 1)' : 'rgba(237, 57, 45, 1)'),
+                        data: Object.values(data)
+                    }]
+                }
+                const config = {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: false
+                            }
+                        }
+                    },
+
+                }
+                if (salesBarChart) {
+                    salesBarChart?.destroy()
+                }
+                salesBarChart = new Chart(
+                    document.getElementById('sales-bar-chart'),
+                    config
+                );
+            },
+            error: response => console.log(response)
+        })
+    }
+
+    $('#sales-time-select').on('change', ({ target: { value } }) => (
+        getSales(value)
+    ))
+    getSales('month')
+
+    const getWeeklySales = (month) => {
+        $.ajax({
+            type: "GET",
+            url: salesUrl,
+            data: { month, type: 'week' },
+            success: (response) => {
+                const { data } = response
+                $('#heatmap').empty()
+                $('.heatmap-legend').remove()
+                let heatmap = new HeatmapPlugin('heatmap', data, {}, {}, true);
+            },
+            error: response => console.log(response)
+        })
+    }
+    getWeeklySales(currentMonth)
+
+    $('#sales-week-select').on('change', ({ target: { value } }) => {
+        getWeeklySales(value)
+    })
+</script>
+{% endblock scripts %}

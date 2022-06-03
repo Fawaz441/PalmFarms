@@ -67,7 +67,7 @@ Products
 {% endblock list_content %}
 {% block scripts %}
 <script>
-    const url = "{% url 'ajax_products:adjust_product_quantity' %}"
+    const url = "{% url 'ajax:products:adjust_product_quantity' %}"
     const csrfToken = $("input[name='csrfmiddlewaretoken']").val()
     const adjustQuantity = (data, successCallback, errorCallback) => {
         $.ajax({
