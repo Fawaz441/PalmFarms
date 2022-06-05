@@ -33,7 +33,7 @@ def get_payments(request):
         query_params['farmer'] = request.user
     else:
         query_params['customer'] = request.user
-    payments = Payment.objects.filter(**query_params)
+    payments = Payment.objects.filter(**query_params).order_by('-timestamp')
     data = get_template(
         'pages/payments/payment-list-rows.html').render({'payments': payments})
     return JsonResponse(data={'data': data})
@@ -72,3 +72,35 @@ def get_sales(request):
                 ordered_date__day=day
             ).count()
     return JsonResponse({'data': data})
+
+
+def get_payment_reference(request):
+    order_id = request.GET.get('order')
+    now = timezone.now()
+    order = Cart.objects.filter(
+        ordered=False,
+        delivered=False,
+        user=request.user,
+        id=order_id
+    ).first()
+    if order:
+        new_ref = f"ORDER--{order_id}--{request.user.id}"
+        order.reference = new_ref
+        order.save()
+        return JsonResponse({'data': new_ref})
+    else:
+        return JsonResponse({'error': 'Error.'}, status=400)
+
+
+def update_order(request):
+    order_id = request.GET.get('order')
+    order = Cart.objects.filter(
+        ordered=False,
+        delivered=False,
+        user=request.user,
+        id=order_id
+    ).first()
+    order.ordered = True
+    order.ordered_date = timezone.now()
+    order.save()
+    return JsonResponse({'message': 'Success'})

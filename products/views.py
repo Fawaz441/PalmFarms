@@ -1,16 +1,22 @@
-from .models import Payment, Product, ProductType, Cart, CartProduct
-from .forms import BankPaymentConfirmationForm, ProductForm
-from products.utils import confirm_bank_payment
-from django.utils.dates import MONTHS
-from products.utils import confirm_bank_payment, get_months_options
-from django.utils.timezone import now
-from email import message
+import json
 from accounts.mixins import FarmerMixin
 from accounts.models import Farm
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
-from django.views.generic import View, ListView
+from django.utils.dates import MONTHS
+from django.http import HttpResponse
+from django.utils.timezone import now
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import ListView, View
+
+from products.utils import confirm_bank_payment, get_months_options
+from accounts.models import DISPATCH_RIDER, User
+
+from .forms import BankPaymentConfirmationForm, ProductForm
+from .models import Cart, CartProduct, Payment, Product, ProductType
 
 
 def get_years():
@@ -50,6 +56,8 @@ class ProductListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         producttypes = ProductType.objects.all()
         context['producttypes'] = producttypes
+        context['selectedproducttype'] = int(self.request.GET.get(
+            'category')) if self.request.GET.get('category') else None
         return context
 
     def get_queryset(self):
@@ -85,8 +93,8 @@ class PaymentListView(LoginRequiredMixin, ListView):
         user = self.request.user
         time = self.get_current_time()
         if user.is_farmer:
-            return Payment.objects.filter(farmer=user, timestamp__year=time['year'], timestamp__month=time['month'])
-        return Payment.objects.filter(customer=user, timestamp__year=time['year'], timestamp__month=time['month'])
+            return Payment.objects.filter(farmer=user, timestamp__year=time['year'], timestamp__month=time['month']).order_by('-timestamp')
+        return Payment.objects.filter(customer=user, timestamp__year=time['year'], timestamp__month=time['month']).order_by('-timestamp')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -113,7 +121,7 @@ class AddToCart(LoginRequiredMixin, View):
         if product.available_stock == 0:
             return self.redirect_user(request, "Product out of stock")
         user_cart, _ = Cart.objects.get_or_create(
-            user=request.user, delivered=False, ordered=False)
+            user=request.user, ordered=False)
         if _:
             cart_product = CartProduct.objects.create(
                 product=product
@@ -133,9 +141,11 @@ class AddToCart(LoginRequiredMixin, View):
 
 class CheckoutView(LoginRequiredMixin, View):
     def get(self, request):
+        dispatch_riders = User.objects.filter(user_type=DISPATCH_RIDER)
         user_cart = Cart.objects.filter(
             user=request.user, delivered=False, ordered=False).prefetch_related('items').first()
-        context = {'cart': user_cart}
+        context = {'cart': user_cart, 'pub_key': settings.PAYSTACK_PUBLIC_KEY,
+                   'phone': request.user.phone_number, 'dispatch_riders': dispatch_riders}
         return render(request, 'pages/products/cart.html', context)
 
 
@@ -156,3 +166,36 @@ class ConfirmBankPayment(LoginRequiredMixin, View):
         else:
             messages.error(request, "invalid")
             return redirect(request.META.get("HTTP_REFERER"))
+
+
+class AttachDispatchRider(View):
+    def get(self, request):
+        order_id = request.GET.get('order')
+        dispatch_rider_id = request.GET.get('rider')
+        order = Cart.objects.get(id=order_id)
+        dispatch_rider = User.objects.get(id=dispatch_rider_id)
+        order.dispatch_rider = dispatch_rider
+        order.save()
+        messages.success(request, "Rider successfully selected.")
+        return redirect(request.META.get("HTTP_REFERER"))
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ConfirmPayment(View):
+    def post(self, request):
+        body = json.loads(request.body)
+        data = body["data"]
+        order_id = data['reference'].split('--')[-1]
+        Cart.objects.filter(id=order_id).update(ordered=True)
+        cart = Cart.objects.get(id=int(order_id))
+        print('cart', cart)
+        Payment.objects.create(
+            farmer=cart.items.first().product.farmer,
+            reference=data['reference'],
+            order=cart,
+            timestamp=data['paid_at'],
+            amount=data['amount']/100,
+            status=data['gateway_response'],
+            customer=cart.user
+        )
+        return HttpResponse(status=200)

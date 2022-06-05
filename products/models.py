@@ -58,6 +58,7 @@ class Cart(models.Model):
     farmer = models.ForeignKey(
         User, on_delete=models.SET_NULL, blank=True, null=True)
     ordered_date = models.DateTimeField(blank=True, null=True)
+    reference = models.CharField(max_length=100)
 
     def __str__(self):
         if self.user:
@@ -90,3 +91,6 @@ class Payment(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="farmer_payments")
     customer = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="customer_payments")
+
+    def __str__(self):
+        return self.reference

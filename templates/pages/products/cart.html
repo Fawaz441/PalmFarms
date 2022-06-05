@@ -39,16 +39,27 @@ Checkout
             <h3 class="text-2xl text-primary font-bold">Available Delivery Method</h3>
             <div class="mt-3 border-[2px] border-primary rounded-lg bg-[#B5E991] p-3">
                 <h4 class="text-primary font-bold">Select Location</h4>
-                <div class="flex justify-between items-center my-5">
+                {% for rider in dispatch_riders %}
+                <a href="{% url 'products:attach_dispatch_rider' %}?order={{cart.id}}&rider={{rider.id}}"
+                    class="flex justify-between items-center my-5 border-b border-b-primary pb-3">
                     <div>
-                        <p class="text-primary">Dispatch Rider {{dispatch_rider}}</p>
+                        <p class="text-primary">Dispatch Rider : {{rider.full_name}}</p>
                         <p class="text-primary">Delivery : 2hrs</p>
                     </div>
                     <div class="flex items-center space-x-[25px]">
-                        <p class="text-primary">&#8358;500.00</p>
+                        <div>
+                            <p class="text-primary">&#8358;500.00</p>
+                            {% if cart.dispatch_rider == rider %}
+                            <div
+                                class="p-1 bg-primary text-sm rounded-[5px] text-white flex items-center justify-center">
+                                SELECTED
+                            </div>
+                            {% endif %}
+                        </div>
                         <div class="h-[30px] w-[30px] rounded-[15px] bg-white"></div>
                     </div>
-                </div>
+                </a>
+                {% endfor %}
             </div>
         </div>
         {% endif %}
@@ -58,10 +69,17 @@ Checkout
         <h2 class="text-primary text-[20px]">Payment Details</h2>
         <p class="mt-[18px] text-primary">Complete your order by making payments</p>
         <div class="mt-5 flex items-center justify-center">
-            <button class="bg-primary text-white rounded-[5px] min-w-[80%] flex items-center justify-center p-3">
+            <button
+                class="bg-primary text-white rounded-[5px] disabled:bg-primary/[0.7] min-w-[80%] flex items-center justify-center p-3"
+                onclick="payWithPaystack()" {% if not cart.dispatch_rider %} disabled {% endif %}>
                 Pay &#8358;{{cart.total_cost|floatformat:2|intcomma}}
             </button>
         </div>
+        {% if not cart.dispatch_rider %}
+        <p class="text-sm text-center" style="color:red;">
+            Please select a delivery method.
+        </p>
+        {% endif %}
         <div class="mt-10 flex items-center w-full space-x-2">
             <div class="border border-dotted border-primary" style="flex:1"></div>
             <p>OR</p>
@@ -77,12 +95,64 @@ Checkout
                 {% csrf_token %}
                 <input type="hidden" name="order" value={{cart.id}}>
                 <input type="hidden" name="amount" value={{cart.total_cost}}>
-                <button type="submit"
-                    class="max-w-[200px] text-white bg-primary rounded-lg flex items-center justify-center p-3 align-center">Confirm
+                <button type="submit" {% if not cart.dispatch_rider %} disabled {% endif %}
+                    class="max-w-[200px]  text-white bg-primary disabled:bg-primary/[0.7] rounded-lg flex items-center justify-center p-3 align-center">Confirm
                     Payment</button>
             </form>
+            {% if not cart.dispatch_rider %}
+            <p class="text-sm text-center" style="color:red;">
+                Please select a delivery method.
+            </p>
+            {% endif %}
         </div>
         {% endif %}
     </div>
 </div>
 {% endblock list_content %}
+{% block scripts %}
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+    let refUrl = "{% url 'ajax:products:get_payment_reference' %}"
+    let updateOrderURL = "{% url 'ajax:products:update_order' %}"
+    let cart = "{{cart.id}}"
+    let redirectUrl = "{% url 'accounts:user-view' %}"
+    function payWithPaystack(e) {
+        e?.preventDefault();
+        $.ajax({
+            url: refUrl,
+            data: { order: Number(cart) },
+            success: ({ data }) => {
+                let handler = PaystackPop.setup({
+                    key: '{{pub_key}}', // Replace with your public key
+                    email: '{{phone}}@gmail.com',
+                    amount: Number("{{ cart.total_cost }}") * 100,
+                    ref: data,
+                    label: "{{phone}}",
+                    onClose: function () {
+                        console.log('window closed!');
+                    },
+                    callback: function (response) {
+                        $.ajax({
+                            url: updateOrderURL,
+                            data: { order: Number(cart) },
+                            success: response => {
+                                toast("Your order has been received!")
+                                setTimeout(() => {
+                                    window.location.href = redirectUrl
+                                }, 2000)
+                            },
+                            error: response => {
+                                setTimeout(() => {
+                                    window.location.href = redirectUrl
+                                }, 3000)
+                            }
+                        })
+                    }
+                });
+                handler.openIframe();
+            },
+            error: response => toast("An error occured. Please try again", true)
+        })
+    }
+</script>
+{% endblock scripts %}

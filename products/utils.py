@@ -23,12 +23,14 @@ def generate_reference():
 def confirm_bank_payment(order, amount, reference=None):
     order.delivery_address = "Just a random address"
     order.ordered = True
+    new_ref = f"ORDER--{order.id}--{order.user.id}"
+    order.reference = new_ref
     order.ordered_date = timezone.now()
     order.save()
     order.refresh_from_db()
     Payment.objects.create(
         amount=amount,
-        reference=reference or generate_reference(),
+        reference=new_ref or reference,
         status="Pending Confirmation",
         farmer=order.items.first().product.farmer,
         customer=order.user

@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="h-[100px] flex justify-between items-center px-8 border-primary border-b-[2px]">
-    <img src="{% static 'images/logo.svg' %}" />
+    <a href="{% url 'accounts:user-view' %}"><img src="{% static 'images/logo.svg' %}" /></a>
     <div class="flex space-x-6">
         <a class="text-primary font-inter text-[20px]" href="{% url 'accounts:dashboard' %}">Home</a>
         {% if request.user.is_farmer %}
