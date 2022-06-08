@@ -12,16 +12,18 @@ import dotenv
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-import chat.routing
-
-SETTINGS = os.getenv("SETTINGS")
 
 dotenv.read_dotenv(os.path.join(
     os.path.dirname(os.path.dirname(__file__)), '.env'))
+
+SETTINGS = os.getenv("SETTINGS")
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                       SETTINGS)
+django_asgi_app = get_asgi_application()
+import chat.routing
+
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(
         URLRouter(
             chat.routing.websocket_urlpatterns
