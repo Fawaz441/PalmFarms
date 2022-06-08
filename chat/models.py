@@ -35,3 +35,8 @@ class Message(models.Model):
     text = models.TextField()
     sender = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class TempChatFile(models.Model):
+    file = models.FileField(upload_to='')
+    timestamp = models.DateTimeField(auto_now=True)
