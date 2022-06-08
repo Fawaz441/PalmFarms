@@ -151,7 +151,7 @@
                     </div>
                     <div class="space-y-2">
                         <h4 class="text-primary font-inter text-[20px]">{% if request.user.is_farmer %}
-                            {{channel.purchaser.surname}} {% else %} {{request.seller.surname}} {% endif %}</h4>
+                            {{channel.purchaser.surname}} {% else %} {{channel.seller.surname}} {% endif %}</h4>
                         <p class="text-primary font-inter text-base">{{channel.display.last_message}}</p>
                     </div>
                 </div>
