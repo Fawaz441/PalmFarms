@@ -131,8 +131,6 @@ PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
+        "CONFIG": {"hosts": [os.environ.get("REDIS_URL", "redis://localhost:6379")]}
     },
 }
