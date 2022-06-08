@@ -5,3 +5,5 @@ design/
 *.sqlite3
 media/
 .env
+node_modules
+*.rdb
