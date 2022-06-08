@@ -10,6 +10,7 @@ urlpatterns = [
     path('', LandingPage.as_view(), name='landing-page'),
     path('', include(('products.urls', 'products'))),
     path('accounts/', include(('accounts.urls', 'accounts'))),
+    path('chat/', include(('chat.urls', 'chat'))),
     path('ajax/', include(('ajax.urls', 'ajax')))
 ]
 

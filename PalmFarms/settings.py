@@ -29,7 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'accounts',
     'products',
-    'phonenumber_field'
+    'chat',
+    'phonenumber_field',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'PalmFarms.wsgi.application'
+ASGI_APPLICATION = 'PalmFarms.asgi.application'
 
 
 # Database
@@ -125,3 +128,11 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'accounts:login'
 
 PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
