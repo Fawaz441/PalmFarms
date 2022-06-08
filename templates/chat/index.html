@@ -151,7 +151,8 @@
                     </div>
                     <div class="space-y-2">
                         <h4 class="text-primary font-inter text-[20px]">{% if request.user.is_farmer %}
-                            {{channel.purchaser.surname}} {% else %} <span>{{channel.seller.surname}} Farms </span> {% endif %}</h4>
+                            {{channel.purchaser.surname}} {% else %} <span>{{channel.seller.surname}} Farms </span> {%
+                            endif %}</h4>
                         <p class="text-primary font-inter text-base">{{channel.display.last_message}}</p>
                     </div>
                 </div>
@@ -200,6 +201,7 @@
     const channels = document.querySelectorAll(".channel")
     let sellerName = ''
     let currentChannelID = null
+    let chatSocket = null;
     channels.forEach(channel => channel.addEventListener('click', () => {
         const name = channel.getAttribute('seller-name')
         if (channel.id != currentChannelID) {
@@ -233,6 +235,7 @@
         node.scrollTop = node.scrollHeight;
     }
     const startConnection = (id, sellername) => {
+        chatSocket?.close()
         $('#channel_receiver_name').text(sellername)
         document.querySelector('#chat-message-input').focus();
         currentChannelID = id
@@ -243,7 +246,7 @@
             + '/ws/chat/'
             + id
             + '/'
-        const chatSocket = new WebSocket(socketUrl)
+        chatSocket = new WebSocket(socketUrl)
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             if (Object.keys(data)[0] === 'messages') {
