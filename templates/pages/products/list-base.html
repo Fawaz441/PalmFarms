@@ -9,7 +9,7 @@
         <a class="text-primary font-inter text-[20px]" href="{% url 'accounts:dashboard' %}">Dashboard</a>
         {% endif %}
         <a class="text-primary font-inter text-[20px]" href="{% url 'products:payments' %}">Payment</a>
-        <a class="text-primary font-inter text-[20px]" href="#">Chat With Us</a>
+        <a class="text-primary font-inter text-[20px]" href="{% url 'chat:chat' %}">Chat With Us</a>
     </div>
     {{request.user.surname}}
     <a href="{% url 'accounts:logout' %}" class="border-primary border-[1px] rounded-[20px] p-4 text-primary">Log
