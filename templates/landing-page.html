@@ -3,10 +3,12 @@
 {% block content %}
 <div class="bg-white">
     <div class="h-[100px] px-[30px] flex items-center justify-between border-b-[6px] border-primary">
-        <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        <a href="{% url 'landing-page' %}">
+            <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        </a>
         <div class="flex items-center space-x-8">
-            <a class="text-primary font-inter text-xl" href="#">Home</a>
-            <a class="text-primary font-inter text-xl" href="#">About Us</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'landing-page' %}">Home</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'about' %}">About Us</a>
             <a class="text-primary font-inter text-xl" href="#">Contact Us</a>
             <a class="text-primary font-inter text-xl" href="#">FAQ</a>
         </div>

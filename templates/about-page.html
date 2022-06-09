@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="bg-white">
+    <div class="h-[100px] px-[30px] flex items-center justify-between border-b-[6px] border-primary">
+        <a href="{% url 'landing-page' %}">
+            <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        </a>
+        <div class="flex items-center space-x-8">
+            <a class="text-primary font-inter text-xl" href="{% url 'landing-page' %}">Home</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'about' %}">About Us</a>
+            <a class="text-primary font-inter text-xl" href="#">Contact Us</a>
+            <a class="text-primary font-inter text-xl" href="#">FAQ</a>
+        </div>
+        {% if not request.user.is_authenticated %}
+        <a href="{% url 'accounts:login' %}" class="px-[39px] py-[16px] border border-primary
+            rounded-[20px] flex items-center hover:bg-primary hover:text-white transition-all
+             justify-center text-primary bg-white text-[20px]">
+            Sign in
+        </a>
+        {% endif %}
+    </div>
+    <div class="mt-[47px]">
+        <div class="flex m-[50px]">
+            <div class="w-[50%]">
+                <h1 class="text-primary font-inter text-[96px] font-bold">About</h1>
+                <h1 class="text-lightgreen font-inter text-[96px] font-bold">PalmFarms</h1>
+            </div>
+            <div class="w-[50%]">
+                <p class="max-w-[623px] text-[#ADAFAC] font-inter text-2xl">
+                    PalmFarms is a platform that aims to connect farmers, customers, dispatch riders and investors
+                    together while
+                    assisting the farmers to gain total control of the farm from management to sales analytics, to
+                    logistics.
+                    See PalmFarms as a digital marketplace.
+                </p>
+            </div>
+
+        </div>
+        <div class="flex mt-[40px]">
+            <div class="w-[65%] bg-primary px-5 py-2 rounded-lg">
+                <h2 class="font-bold font-inter text-[36px] text-white">
+                    <span class="block">The People</span>
+                    <span class="block">Behind PalmFarms</span>
+                </h2>
+                <div class="flex space-x-5">
+                    <div
+                        class="h-[159px] w-[159px] bg-white rounded-lg space-y-[2.46px] flex flex-col items-center justify-center">
+                        {% include 'profile.html' %}
+                        <h3 class="text-center text-sm text-primary font-inter">Sharbie|Product Designer</h3>
+                    </div>
+                    <div
+                        class="h-[159px] w-[159px] bg-white rounded-lg space-y-[2.46px] flex flex-col items-center justify-center">
+                        {% include 'profile.html' %}
+                        <h3 class="text-center text-sm text-primary font-inter">Fawaz|Full-stack Developer</h3>
+                    </div>
+                    <div
+                        class="h-[159px] w-[159px] bg-white rounded-lg space-y-[2.46px] flex flex-col items-center justify-center">
+                        {% include 'profile.html' %}
+                        <h3 class="text-center text-sm text-primary font-inter">Promise|Project Assistant</h3>
+                    </div>
+                </div>
+                <div class="space-x-5 mt-[67px] flex pb-[33px]">
+                    <div class="space-y-2 flex-col items-center justify-center">
+                        <h3 class="text-white text-4xl font-[800] font-inter">50+</h3>
+                        <span class="block text-white text-2xl font-inter font-[400]">Farms Managed</span>
+                    </div>
+                    <div class="space-y-2 flex-col items-center justify-center">
+                        <h3 class="text-white text-4xl font-[800] font-inter">1100+</h3>
+                        <span class="block text-white text-2xl font-inter font-[400]">Users</span>
+                    </div>
+                    <div class="space-y-2 flex-col items-center justify-center">
+                        <h3 class="text-white text-4xl font-[800] font-inter">10+</h3>
+                        <span class="block text-white text-2xl font-inter font-[400]">Countries</span>
+                    </div>
+                    <div class="space-y-2 flex-col items-center justify-center">
+                        <h3 class="text-white text-4xl font-[800] font-inter">40+</h3>
+                        <span class="block text-white text-2xl font-inter font-[400]">Reviews</span>
+                    </div>
+                </div>
+            </div>
+            <div class="w-[35%] bg-white px-5 py-2 rounded-lg border border-primary">
+                <h2 class="font-bold font-inter text-[36px] text-primary">
+                    <span class="block">Our Team</span>
+                </h2>
+                <div class="mt-[51px] flex space-x-[19px]">
+                    <div class="h-[100px] w-[3px] bg-primary"></div>
+                    <div class="space-y-[30px]">
+                        <div class="flex space-x-2 items-center">
+                            <h2 class="text-primary text-[30px] font-inter">3</h2>
+                            <h3 class="text-primary text-[25px] font-inter">Members</h3>
+                        </div>
+                        <p class="text-primary font-inter">Designer - Developer - Agricpreneur</p>
+                    </div>
+                </div>
+                <div class="mt-[30px]">
+                    <p class="text-primary border-l-[3px] pl-2 border-primary font-inter">
+                        accessibility and ease of transaction are
+                        germane to the platform’s core aims.
+                        <br />
+                        <br />
+                        through a thoughtful platform, we are
+                        placing farms on the global map, making
+                        farm management simpler
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
