@@ -12,11 +12,18 @@
             <a class="text-primary font-inter text-xl" href="#">Contact Us</a>
             <a class="text-primary font-inter text-xl" href="#">FAQ</a>
         </div>
-        <a href="{% url 'accounts:login' %}" class="px-[39px] py-[16px] border border-primary
+        <div class="flex items-center space-x-2">
+            <a href="{% url 'accounts:pre-signup' %}" class="px-[39px] py-[16px] border border-primary
             rounded-[20px] flex items-center hover:bg-primary hover:text-white transition-all
              justify-center text-primary bg-white text-[20px]">
-            Sign in
-        </a>
+                Register
+            </a>
+            <a href="{% url 'accounts:login' %}" class="px-[39px] py-[16px] border border-primary
+            rounded-[20px] flex items-center hover:bg-primary hover:text-white transition-all
+             justify-center text-primary bg-white text-[20px]">
+                Sign in
+            </a>
+        </div>
     </div>
     <div class="items-center justify-center flex my-[47px]">
         <img src="{% static 'images/landing-text.svg' %}"

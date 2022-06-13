@@ -12,7 +12,7 @@ from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USE
 from products.models import Product, Cart
 from products.utils import get_months_options
 
-user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR]
+user_types = [PALM_RETAILER, FARMER, DISPATCH_RIDER]
 
 
 class PreSignupView(UnAuthenticatedUserMixin, View):
