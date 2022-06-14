@@ -4,7 +4,7 @@
 <div class="bg-white flex">
     {% block sidebar %}
     <div
-        class="w-[342px] h-screen fixed bg-primary rounded-tr-[10px] rounded-br-[10px] py-[33px] pl-[27px] flex flex-col">
+        class="w-[342px] h-screen fixed bg-primary rounded-tr-[10px] overflow-y-scroll rounded-br-[10px] py-[33px] pl-[27px] flex flex-col">
         <img src="{% static 'images/logo.svg' %}" alt="PalmFarms" class="h-[47.42px] w-[47.44px]" />
         <div class="mt-[47.58px] space-y-[22px]">
             {% if request.user.is_farmer %}
@@ -70,7 +70,7 @@
                 <span class="text-2xl text-primary font-italiana ml-[17px]">Chat with us</span>
             </a>
             <a href="{% url 'products:payments' %}"
-                class="bg-white h-[67px] w-[267px] rounded-[10px] flex flex-row pl-[17px] items-center">
+                class="bg-white h-[67px] w-[267px] rounded-[10px] mb-4 flex flex-row pl-[17px] items-center">
                 <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M4.71423 0.035675C4.48912 0.0907001 4.24151 0.233264 4.09645 0.390835C3.88635 0.620938 3.7613 0.926075 3.68876 1.37878L3.65625 1.59888L3.71378 1.62389C3.81382 1.66141 12.3026 3.33466 16.0043 4.04748C16.3695 4.11751 16.9822 4.23506 17.3674 4.3101C19.0332 4.63024 19.7835 4.7628 19.836 4.74279C19.876 4.72778 19.9286 4.49768 19.9861 4.09C20.0411 3.69732 19.9236 3.32715 19.6434 3.02702C19.4608 2.82943 19.2858 2.74189 18.9181 2.66185C18.5129 2.57682 16.7596 2.23166 14.9038 1.8715C14.4011 1.77396 13.6207 1.62139 13.1655 1.53385C11.1371 1.13867 6.30244 0.218257 5.29699 0.035675C5.04187 -0.0118461 4.91181 -0.0118461 4.71423 0.035675Z"

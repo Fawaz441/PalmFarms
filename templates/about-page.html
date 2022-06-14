@@ -9,8 +9,8 @@
         <div class="flex items-center space-x-8">
             <a class="text-primary font-inter text-xl" href="{% url 'landing-page' %}">Home</a>
             <a class="text-primary font-inter text-xl" href="{% url 'about' %}">About Us</a>
-            <a class="text-primary font-inter text-xl" href="#">Contact Us</a>
-            <a class="text-primary font-inter text-xl" href="#">FAQ</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'contact-us' %}">Contact Us</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'faq' %}">FAQ</a>
         </div>
         {% if not request.user.is_authenticated %}
         <a href="{% url 'accounts:login' %}" class="px-[39px] py-[16px] border border-primary
