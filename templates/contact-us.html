@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/index.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>
+<div class="bg-white">
+    <div class="h-[100px] px-[30px] flex items-center justify-between">
+        <a href="{% url 'landing-page' %}">
+            <img src="{% static 'images/logo.svg' %}" alt="PalmFarms Logo" />
+        </a>
+        <div class="flex items-center space-x-8">
+            <a class="text-primary font-inter text-xl" href="{% url 'landing-page' %}">Home</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'about' %}">About Us</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'contact-us' %}">Contact Us</a>
+            <a class="text-primary font-inter text-xl" href="{% url 'faq' %}">FAQ</a>
+        </div>
+        <div class="flex items-center space-x-2">
+            <a href="{% url 'accounts:pre-signup' %}" class="px-[39px] py-[16px] border border-primary
+            rounded-[20px] flex items-center hover:bg-primary hover:text-white transition-all
+             justify-center text-primary bg-white text-[20px]">
+                Register
+            </a>
+            <a href="{% url 'accounts:login' %}" class="px-[39px] py-[16px] border border-primary
+            rounded-[20px] flex items-center hover:bg-primary hover:text-white transition-all
+             justify-center text-primary bg-white text-[20px]">
+                Sign in
+            </a>
+        </div>
+    </div>
+    <div class="flex mt-[50px]" style="min-height:calc(100vh - 150px)">
+        <div class="w-[40%] pt-[77px] pl-[50px] bg-primary rounded-tr-[10px] rounded-br-[10px]">
+            <h3 class="font-bold text-4xl text-white ">Contact Information</h3>
+            <p class="text-white mt-5">Fill this form and our team will get back to you within 24hrs</p>
+            <div class="flex flex-col space-y-[82px] mt-[50px]">
+                <div class="flex items-center space-x-5">
+                    <svg width="40" height="45" viewBox="0 0 40 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M7.41384 1.18414C4.89104 1.84987 3.13909 3.11127 1.84265 5.14353C-1.31085 10.119 -0.434873 16.2158 4.61073 24.3098C10.287 33.4199 19.6424 42.1796 25.564 43.9666C29.7336 45.193 33.9733 44.5272 36.7414 42.1796C38.2831 40.8832 40 37.3443 40 35.4522C40 34.1557 39.8248 33.8053 38.8087 33.0345C37.3721 31.9483 30.3643 29.005 29.208 29.005C27.9466 29.005 27.1407 29.5656 26.2998 31.1073C25.1435 33.1396 24.2675 33.2447 21.8849 31.5979C17.5401 28.6196 14.7019 25.396 12.3193 20.8059C11.5484 19.2992 10.9177 17.6524 10.9177 17.0918C10.9177 16.1808 11.163 15.9355 12.985 14.9895C14.1413 14.4288 15.2275 13.693 15.4027 13.3777C16.0334 12.2564 14.0362 3.11127 12.9149 1.84987C11.8988 0.763668 9.86656 0.518394 7.41384 1.18414Z"
+                            fill="white" />
+                    </svg>
+                    <span class="text-white font-bold text-[20px]">+234 8037 0743 52</span>
+                </div>
+                <div class="flex items-center space-x-5">
+                    <svg width="40" height="31" viewBox="0 0 40 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10.7706 0.0600586L5.88577 0.108107L5.093 0.324318C3.01095 0.892876 1.33731 2.13409 0.56055 3.70363C-0.0160157 4.85676 0.00800785 4.4884 0 15.0347C0 21.2408 0.0320314 24.6201 0.0880864 24.9645C0.184181 25.5971 0.552542 26.526 0.89688 27.0305C1.29727 27.6311 2.2422 28.4959 2.93087 28.9043C3.72365 29.3688 4.34826 29.6251 5.3012 29.8573L6.04593 30.0495H20.0597H34.0734L34.8742 29.8333C36.4357 29.4008 37.9572 28.4879 38.766 27.495C39.2305 26.9264 39.751 25.9174 39.8951 25.2848C39.9752 24.9405 39.9992 22.7623 39.9992 15.0347C39.9992 3.99992 40.0473 4.84075 39.3826 3.55148C38.782 2.40636 37.5328 1.33331 36.0594 0.700687C35.2346 0.35635 34.3137 0.156153 33.0724 0.0600586C31.9513 -0.0200195 19.8274 -0.0200195 10.7706 0.0600586ZM33.5129 3.34328C34.3297 3.50344 34.674 3.62355 34.674 3.74367C34.674 3.83176 30.6701 8.16401 26.6742 12.3922C22.0056 17.341 22.0056 17.333 20.9405 17.6373C20.356 17.8135 19.4351 17.7574 18.8185 17.5252C17.8575 17.1568 17.6413 16.9566 13.6614 12.7925C9.98579 8.94077 6.30218 5.04094 5.52542 4.1841L5.17307 3.79172L5.44534 3.67961C5.59749 3.61555 6.02991 3.49543 6.40628 3.39933C7.07894 3.23117 7.22308 3.23117 19.4591 3.19113C26.2658 3.1591 32.0474 3.1591 32.3117 3.16711C32.576 3.18312 33.1205 3.2632 33.5129 3.34328ZM36.5879 24.9725C36.2275 25.6772 35.0904 26.4539 33.9933 26.7342C33.4888 26.8623 8.03188 26.9424 6.80668 26.8143C5.58147 26.6942 4.63655 26.3018 3.94787 25.6291C3.17912 24.8844 3.24318 25.8293 3.21916 15.4912C3.20314 9.21304 3.22717 6.39427 3.28322 6.4263C3.33127 6.45033 4.46838 7.6515 5.82171 9.09292C10.6424 14.234 15.3591 19.0947 15.8716 19.4551C17.305 20.4801 18.7144 20.9285 20.2839 20.8645C21.7253 20.8004 22.9105 20.392 24.0636 19.5592C24.488 19.2549 29.1886 14.3301 34.2816 8.84468L36.716 6.22611L36.74 15.4351C36.7561 24.6041 36.7561 24.6522 36.5879 24.9725Z"
+                            fill="white" />
+                    </svg>
+                    <span class="text-white font-bold text-[20px]">palmfarms@gmail.com</span>
+                </div>
+                <div class="flex items-center space-x-5">
+                    <svg width="40" height="45" viewBox="0 0 40 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M18.4904 0.0297813C12.7058 0.381577 7.21635 2.86926 3.79345 6.68874C-0.578932 11.5636 -1.22522 18.0153 2.13386 23.3299C2.56471 24.0146 3.211 24.8564 4.28016 26.1317C7.62327 30.0956 12.8254 36.5724 17.6446 42.7791C18.7298 44.1737 18.9372 44.3935 19.3202 44.5569C19.6314 44.6825 20.3654 44.6825 20.6766 44.5569C21.0596 44.3998 21.275 44.1674 22.1926 42.9675C26.6208 37.1943 31.5996 30.9688 34.9826 26.9797C36.7539 24.8941 37.3842 24.0963 37.8629 23.3299C39.4587 20.8108 40.2007 17.8708 39.9534 15.1318C39.7299 12.663 39.0916 10.7909 37.7432 8.69899C34.7432 4.02516 29.0064 0.777344 22.6154 0.130295C21.4027 0.00465393 19.6074 -0.0330391 18.4904 0.0297813ZM22.0011 9.66643C25.6713 10.4014 28.2245 13.0336 28.2325 16.0804C28.2325 17.2426 27.9612 18.1597 27.299 19.19C26.8522 19.881 26.5171 20.2391 25.7671 20.8422C24.6819 21.7028 23.3575 22.2996 21.8654 22.5949C20.8122 22.8022 19.0649 22.7896 18.0037 22.5697C15.6819 22.0797 13.759 20.8547 12.6978 19.19C12.0196 18.1221 11.7722 17.2803 11.7722 16.1118C11.7722 14.2021 12.626 12.6127 14.3893 11.2683C15.634 10.3135 17.1101 9.73553 18.8494 9.51566C19.6393 9.42143 21.1394 9.49053 22.0011 9.66643Z"
+                            fill="white" />
+                    </svg>
+
+                    <span class="text-white font-bold text-[20px]">palmfarms street, Ravers Side Lagos</span>
+                </div>
+            </div>
+            <div class="mt-[55.35px] mx-[-50px]">
+                <svg width="300" height="313" viewBox="0 0 300 313" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="75" cy="213" r="200" fill="white" />
+                    <circle cx="211.5" cy="88.5" r="88.5" fill="#9BF157" />
+                </svg>
+
+            </div>
+        </div>
+        <form class="w-[60%] pt-[69px] pl-8  bg-white" id="contact-form">
+            {% csrf_token %}
+            <div class="flex space-x-[102px]">
+                <div class="flex flex-col space-y-4">
+                    <label for="first_name" class="text-black font-inter font-bold text-[20px]">First Name</label>
+                    <input required type="text" name="first_name" id="first_name"
+                        class="outline-none border-b-primary border-b font-inter text-primary text-xl">
+                </div>
+                <div class="flex flex-col space-y-4">
+                    <label for="last_name" class="text-black font-inter font-bold text-[20px]">Last Name</label>
+                    <input required type="text" name="last_name" id="last_name"
+                        class="outline-none border-b-primary border-b font-inter text-primary text-xl">
+                </div>
+            </div>
+
+            <div class="flex space-x-[102px] mt-[80px]">
+                <div class="flex flex-col space-y-4">
+                    <label for="email" class="text-black font-inter font-bold text-[20px]">Mail</label>
+                    <input required type="email" name="email" id="email"
+                        class="outline-none border-b-primary border-b font-inter text-primary text-xl">
+                </div>
+                <div class="flex flex-col space-y-4">
+                    <label for="phone_no" class="text-black font-inter font-bold text-[20px]">Phone No(+234)</label>
+                    <input required type="tel" name="phone_no" id="phone_no"
+                        class="outline-none border-b-primary border-b font-inter text-primary text-xl">
+                </div>
+            </div>
+
+            <div class="mt-[80px] flex flex-col">
+                <label for="message" class="text-black font-inter font-bold text-[20px]">Message</label>
+                <textarea required name="message" id="message"
+                    class="outline-none border-b-primary border-b font-inter text-primary text-xl"></textarea>
+            </div>
+            <div class="mt-5 flex-end  flex mr-5">
+                <input type="submit" value="Send Message" class="!bg-primary text-white ml-auto p-5 rounded-lg" />
+            </div>
+        </form>
+
+    </div>
+
+
+
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+    let userDetailsUrl = "{% url 'ajax:accounts:get_user_details' %}"
+    let contactFormUrl = "{% url 'ajax:accounts:submit' %}"
+    $.ajax({
+        url: userDetailsUrl,
+        success: response => {
+            if (response.has_data) {
+                const { first_name, last_name, phone_no } = response;
+                $('#phone_no').val(phone_no)
+                $('#first_name').val(first_name)
+                $('#last_name').val(last_name)
+            }
+        },
+        error: response => console.log(response)
+    })
+
+    $('#contact-form').submit((e) => {
+        e.preventDefault()
+        let data = $('#contact-form').serializeArray()
+        $.ajax({
+            type: "POST",
+            url: contactFormUrl,
+            data,
+            success: response => {
+                toast(response.message)
+                $('#contact-form').trigger('reset')
+            },
+            error: response => toast(response.message, true)
+        })
+    })
+
+</script>
+{% endblock scripts %}

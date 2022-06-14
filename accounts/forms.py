@@ -1,7 +1,7 @@
 from django.forms import Form, ModelForm, CharField
 from phonenumber_field.formfields import PhoneNumberField
 
-from accounts.models import User
+from accounts.models import User, ContactMessage
 
 
 class UserLoginForm(Form):
@@ -44,3 +44,12 @@ class DispatchRiderForm(ModelForm):
                 'class': 'bg-white border border-primary rounded-[10px] h-[82px] p-[10px] text-[25px]'
             })
             self.fields[field].required = True
+
+
+class ContactMessageForm(ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['message', 'first_name',
+                  'last_name',
+                  'email',
+                  'phone_no']

@@ -98,3 +98,24 @@ class Farm(models.Model):
     @property
     def sample_products(self):
         return self.farm_products.all()[:5]
+
+
+class FAQ(models.Model):
+    question = models.TextField()
+    answer = models.TextField()
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
+
+
+class ContactMessage(models.Model):
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    email = models.EmailField()
+    phone_no = PhoneNumberField()
+    message = models.TextField()
+
+    def __str__(self):
+        return self.first_name
