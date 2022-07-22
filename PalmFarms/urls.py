@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts.api.views import CustomRegisterView, CustomLoginView, CustomLogoutView
 
 from PalmFarms.views import LandingPage, AboutPage, FAQPage, ContactUsPage
 
@@ -14,7 +15,11 @@ urlpatterns = [
     path('', include(('products.urls', 'products'))),
     path('accounts/', include(('accounts.urls', 'accounts'))),
     path('chat/', include(('chat.urls', 'chat'))),
-    path('ajax/', include(('ajax.urls', 'ajax')))
+    path('ajax/', include(('ajax.urls', 'ajax'))),
+
+    path('api/v1/signup/', CustomRegisterView.as_view(), name='register'),
+    path('api/v1/login', CustomLoginView.as_view(), name='login'),
+    path('api/v1/logout/', CustomLogoutView.as_view(), name='logout'),
 ]
 
 if settings.DEBUG:

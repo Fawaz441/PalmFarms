@@ -8,3 +8,5 @@ media/
 node_modules
 *.rdb
 .DS_Store
+.idea/
+test_local.py

@@ -3,7 +3,7 @@ from .models import User, Farm, FAQ, ContactMessage
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['surname', 'user_type']
+    list_display = ['last_name', 'user_type']
 
 
 class ContactMessageAdmin(admin.ModelAdmin):

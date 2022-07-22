@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from accounts.mixins import FarmerMixin, UnAuthenticatedUserMixin
 from accounts.forms import DispatchRiderForm, PalmRetailerOrFarmerForm, UserLoginForm
-from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, INVESTOR, USER_TYPES, Farm, User, get_surname_from_full_name
+from accounts.models import PALM_RETAILER, FARMER, DISPATCH_RIDER, USER_TYPES, Farm, User, get_surname_from_full_name
 from products.models import Product, Cart
 from products.utils import get_months_options
 

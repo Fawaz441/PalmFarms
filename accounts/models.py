@@ -2,10 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 
-DISPATCH_RIDER = 'DISPATCH RIDER'
+DISPATCH_RIDER = 'DISPATCHER'
 PALM_RETAILER = 'RETAILER'
 FARMER = 'FARMER'
-INVESTOR = "INVESTOR"
+
 
 USER_TYPES = [
     (DISPATCH_RIDER, DISPATCH_RIDER),
@@ -38,10 +38,11 @@ class UserManager(BaseUserManager):
         user = User.objects.create(
             phone_number=phone_number,
             full_name=full_name,
-            surname=get_surname_from_full_name(full_name),
+            last_name=get_surname_from_full_name(full_name),
             **fields
         )
         return user
+
 
 # dispatch rider => full_name, phone_number, number_plate, location
 # farmer => full_name, phone_number, farm_product
@@ -51,7 +52,9 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=200)
     # since this will be used for login.
-    surname = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200)
+    profile_pic = models.ImageField(blank=True, null=True)
     phone_number = PhoneNumberField(unique=True)
     number_plate = models.CharField(max_length=200, blank=True, null=True)
     location = models.CharField(max_length=500, blank=True, null=True)
@@ -59,18 +62,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_type = models.CharField(max_length=200, choices=USER_TYPES)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    username = models.CharField(max_length=500, blank=True, null=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'phone_number'
-    EMAIL_FIELD = 'surname'
+    EMAIL_FIELD = 'last_name'
     REQUIRED_FIELDS = ['full_name']
-
-    def get_short_name(self):
-        return self.surname
-
-    @property
-    def first_name(self):
-        return self.full_name.split()[0]
 
     @property
     def is_farmer(self):

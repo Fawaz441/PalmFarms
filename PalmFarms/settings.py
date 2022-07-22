@@ -31,7 +31,18 @@ INSTALLED_APPS = [
     'products',
     'chat',
     'phonenumber_field',
-    'channels'
+    'channels',
+
+    'corsheaders',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'rest_auth.registration',
+    'rest_framework',
+    'rest_auth',
+    'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
@@ -133,4 +144,23 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         "CONFIG": {"hosts": [os.environ.get("REDIS_URL", "redis://localhost:6379")]}
     },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'NON_FIELD_ERRORS_KEY': 'error',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'accounts.api.serializers.SignInSerializer',
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.api.serializers.RegistrationSerializer',
 }
