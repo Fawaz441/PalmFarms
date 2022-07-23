@@ -30,14 +30,15 @@ INSTALLED_APPS = [
     'accounts',
     'products',
     'chat',
+    'consulting',
+    'payments',
+
     'phonenumber_field',
     'channels',
-
     'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
     'rest_auth.registration',
     'rest_framework',
     'rest_auth',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -164,3 +166,8 @@ REST_AUTH_SERIALIZERS = {
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'accounts.api.serializers.RegistrationSerializer',
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3000",
+]

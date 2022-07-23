@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/v1/signup/', CustomRegisterView.as_view(), name='register'),
     path('api/v1/login', CustomLoginView.as_view(), name='login'),
     path('api/v1/logout/', CustomLogoutView.as_view(), name='logout'),
+    path("api/v1/consulting/", include(("consulting.api.urls", "consulting")))
 ]
 
 if settings.DEBUG:
