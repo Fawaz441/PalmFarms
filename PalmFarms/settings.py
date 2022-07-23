@@ -169,5 +169,5 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:3000",
+    "https://palmhack-frontend.herokuapp.com"
 ]
