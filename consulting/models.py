@@ -22,3 +22,13 @@ class ConsultantFile(models.Model):
     file = models.FileField(upload_to=consultant_file_directory_path)
     consultant = models.ForeignKey(
         Consultant, on_delete=models.CASCADE, related_name="files")
+
+
+class ConsultingRequest(models.Model):
+    name = models.CharField(max_length=100)
+    issue = models.TextField()
+    phone_number = PhoneNumberField()
+    address = models.TextField()
+
+    def __str__(self):
+        return self.name
