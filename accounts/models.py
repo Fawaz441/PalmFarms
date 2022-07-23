@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
+from payments.models import Wallet, BankAccount
 
 DISPATCH_RIDER = 'DISPATCHER'
 PALM_RETAILER = 'RETAILER'
@@ -63,6 +64,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     username = models.CharField(max_length=500, blank=True, null=True)
+    wallet = models.OneToOneField(
+        Wallet, on_delete=models.SET_NULL, related_name="user", null=True, blank=True)
+    bank_accounts = models.ManyToManyField(BankAccount, blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'phone_number'

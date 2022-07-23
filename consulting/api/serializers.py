@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, ListField
-from consulting.models import Consultant, ConsultantFile
+from consulting.models import Consultant, ConsultantFile, ConsultingRequest
 
 
 class ConsultantFileSerializer(ModelSerializer):
@@ -27,3 +27,9 @@ class ConsultantRegisterSerializer(ModelSerializer):
         new_consultant = Consultant.objects.create(
             **validated_data
         )
+
+
+class ConsultingRequestSerializer(ModelSerializer):
+    class Meta:
+        model = ConsultingRequest
+        fields = ['name', 'issue', 'phone_number', "address"]

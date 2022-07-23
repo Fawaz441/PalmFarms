@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'chat',
     'consulting',
     'payments',
+    'dispatching',
 
     'phonenumber_field',
     'channels',
