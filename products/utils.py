@@ -35,3 +35,8 @@ def confirm_bank_payment(order, amount, reference=None):
         farmer=order.items.first().product.farmer,
         customer=order.user
     )
+
+
+def generate_tag(length):
+    return ''.join(choice(string.ascii_uppercase + string.digits)
+                   for _ in range(length))

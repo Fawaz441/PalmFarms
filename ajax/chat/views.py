@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.core.files.storage import default_storage
 from chat.models import TempChatFile
-print(os.getenv("SPEECH_KEY"))
 WaveHeader16K16BitMono = bytes([82, 73, 70, 70, 78, 128, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 18,
                                0, 0, 0, 1, 0, 1, 0, 128, 62, 0, 0, 0, 125, 0, 0, 2, 0, 16, 0, 0, 0, 100, 97, 116, 97, 0, 0, 0, 0])
 

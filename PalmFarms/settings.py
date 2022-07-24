@@ -13,6 +13,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+IS_DEV = True
 
 ALLOWED_HOSTS = ['e2d3-102-89-43-55.eu.ngrok.io', '*']
 
@@ -172,3 +173,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://palmhack-frontend.herokuapp.com"
 ]
+
+BASE_URL = "http://127.0.0.1:8000"

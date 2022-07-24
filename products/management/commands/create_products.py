@@ -6,6 +6,7 @@ from accounts.models import Farm
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from products.models import Product, ProductType
+from products.utils import generate_tag
 
 types = ["Vegetables", "Fruits", "Cash Crop", "Grains", "Tubers", "Spices"]
 
@@ -26,7 +27,8 @@ class Command(BaseCommand):
                     cost_price=randint(100, 1000),
                     selling_price=randint(100, 1000),
                     type=product_type,
-                    farm=Farm.objects.first()
+                    farm=Farm.objects.first(),
+                    tag=generate_tag(10)
                 )
                 product_name = urlparse(image_url).path.split('/')[-1]
                 response = requests.get(image_url)

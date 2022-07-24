@@ -1,5 +1,5 @@
-from operator import mod
 from django.db import models
+from django.conf import settings
 from accounts.models import User, Farm
 
 
@@ -8,6 +8,10 @@ class ProductType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProductVariation(models.Model):
+    name = models.CharField(max_length=200)
 
 
 class Product(models.Model):
@@ -21,6 +25,10 @@ class Product(models.Model):
     rating = models.IntegerField(null=True, blank=True)
     farm = models.ForeignKey(Farm, related_name='farm_products',
                              on_delete=models.SET_NULL, null=True, blank=True)
+    discount = models.IntegerField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    variations = models.ManyToManyField(ProductVariation, blank=True)
+    tag = models.CharField(max_length=100, unique=True)
 
     def __str__(self) -> str:
         return self.name
@@ -28,6 +36,14 @@ class Product(models.Model):
     @property
     def farmer(self):
         return self.farm.farmer
+
+    @property
+    def product_image(self):
+        if self.image:
+            if settings.IS_DEV:
+                return settings.BASE_URL + self.image.url
+            return self.image.url
+        return None
 
 
 class CartProduct(models.Model):
@@ -45,6 +61,18 @@ class CartProduct(models.Model):
         return self.product.selling_price * self.quantity
 
 
+class Coupon(models.Model):
+    is_amount = models.BooleanField(default=False)
+    max_use = models.IntegerField(default=1)
+    code = models.CharField(max_length=10)
+    expired = models.BooleanField(default=False)
+    value = models.IntegerField()
+    expiry_date = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.code
+
+
 class Cart(models.Model):
     user = models.ForeignKey(
         User, related_name='basket', on_delete=models.SET_NULL, null=True, blank=True)
@@ -59,17 +87,42 @@ class Cart(models.Model):
         User, on_delete=models.SET_NULL, blank=True, null=True)
     ordered_date = models.DateTimeField(blank=True, null=True)
     reference = models.CharField(max_length=100)
+    coupon = models.ForeignKey(
+        Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    delivery_fee = models.DecimalField(
+        max_digits=10, decimal_places=2, default=1000)
 
     def __str__(self):
         if self.user:
             return self.user.full_name
         return self.id
 
-    def total_cost(self):
+    def subtotal(self):
         total = 0
         for item in self.items.all():
             total += item.total_cost
         return total
+
+    def total_cost(self):
+        total = self.delivery_fee
+        for item in self.items.all():
+            total += item.total_cost
+        coupon = self.coupon
+        if coupon:
+            if coupon.is_amount:
+                total = total - coupon.value
+            else:
+                total = (coupon.value/100) * total
+            if total < 0:
+                return 0
+        return total
+
+    def discount(self):
+        coupon = self.coupon
+        if coupon:
+            if coupon.is_amount:
+                return coupon.value
+            return self.subtotal() * (coupon.value/100)
 
 
 class DispatchApplication(models.Model):

@@ -3,6 +3,7 @@ import django_heroku
 
 ALLOWED_HOSTS = ['palmfarms.herokuapp.com']
 DEBUG = True
+IS_DEV = False
 
 DATABASES = {
     'default': {
