@@ -13,6 +13,17 @@ class DispatchBreakdown(models.Model):
     pass
 
 
+class State(models.Model):
+    name = models.CharField(max_length=100)
+    capital = models.CharField(max_length=100)
+
+
+class DispatchAddress(models.Model):
+    state = models.ForeignKey(
+        State, on_delete=models.SET_NULL, null=True, blank=True)
+    street_address = models.TextField()
+
+
 class Dispatch(models.Model):
     is_large_dispatch = models.BooleanField(default=False)
     goods = models.OneToOneField(
@@ -27,6 +38,10 @@ class Dispatch(models.Model):
     customer = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="dispatches")
     current_dispatch_milestone = models.IntegerField(default=0)
+    address = models.ForeignKey(
+        DispatchAddress, on_delete=models.SET_NULL, null=True, blank=True)
+    is_completed = models.BooleanField(default=False)
+    completed_date = models.DateTimeField(blank=True, null=True)
 
     @property
     def total_dispatch_milestones(self):

@@ -1,4 +1,5 @@
 from rest_framework.serializers import Serializer, ModelSerializer, IntegerField, CharField
+from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from products.models import (
     Product, ProductType, ProductVariation, Cart, CartProduct, Coupon)
 
@@ -43,6 +44,10 @@ class CartProductSerializer(ModelSerializer):
         fields = ["product", "quantity", "id", "total_cost"]
 
 
+class AddCouponSerializer(Serializer):
+    code = CharField()
+
+
 class CouponSerializer(ModelSerializer):
     class Meta:
         model = Coupon
@@ -56,14 +61,15 @@ class CartSerializer(ModelSerializer):
     class Meta:
         model = Cart
         fields = ["delivery_address", "items",
-                  "total_cost", "delivery_fee", "subtotal", "discount", "coupon"]
+                  "total_cost", "delivery_fee", "subtotal", "discount", "coupon", "id"]
 
 
 class DeliveryDetailsSerializer(ModelSerializer):
     first_name = CharField(source='user.first_name')
     last_name = CharField(source="user.last_name")
     phone = CharField(source="user.phone_number")
+    delivery_address = UpdateDeliveryDetailsSerializer()
 
     class Meta:
         model = Cart
-        fields = ["first_name", "last_name", "phone"]
+        fields = ["first_name", "last_name", "phone", "delivery_address"]

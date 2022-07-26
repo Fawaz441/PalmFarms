@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = True
 IS_DEV = True
 
-ALLOWED_HOSTS = ['e2d3-102-89-43-55.eu.ngrok.io', '*']
+ALLOWED_HOSTS = ['15ed-102-89-40-66.eu.ngrok.io', '*']
 
 
 # Application definition

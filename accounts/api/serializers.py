@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import User
+from ..models import User, FARMER, Farm
 from django.db.utils import IntegrityError
 from ..utils import send_welcome_sms
 
@@ -11,11 +11,13 @@ class SignInSerializer(serializers.Serializer):
     user = None
 
     def throw_error(self):
-        raise serializers.ValidationError("Unable to login with provided credentials.")
+        raise serializers.ValidationError(
+            "Unable to login with provided credentials.")
 
     def validate(self, data):
         password = data.get('password')
-        user = User.objects.filter(phone_number__iexact=data['phone_number']).first()
+        user = User.objects.filter(
+            phone_number__iexact=data['phone_number']).first()
 
         if user:
             if user.check_password(password):
@@ -28,7 +30,8 @@ class SignInSerializer(serializers.Serializer):
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    password2 = serializers.CharField(
+        style={'input_type': 'password'}, write_only=True)
 
     class Meta:
         model = User
@@ -52,14 +55,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password2 = self.validated_data['password2']
 
         if password != password2:
-            raise serializers.ValidationError({'error': 'Passwords must match.'})
+            raise serializers.ValidationError(
+                {'error': 'Passwords must match.'})
         user.set_password(password)
         try:
             user.save()
+            if self.validated_data.get('user_type') == FARMER:
+                Farm.objects.create(
+                    name=f'{user.first_name} {user.last_name} Farmers',
+                    farmer=user
+                )
             send_welcome_sms(user, password)
             return user
         except IntegrityError:
-            raise serializers.ValidationError({'error': 'User with this phone number already exists.'})
+            raise serializers.ValidationError(
+                {'error': 'User with this phone number already exists.'})
 
 
 class UserSerializer(serializers.ModelSerializer):

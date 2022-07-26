@@ -2,7 +2,7 @@ from random import choice
 import string
 from django.utils.dates import MONTHS
 from django.utils import timezone
-from products.models import Payment
+from products.models import Payment, Cart
 
 
 def get_months_options():
@@ -40,3 +40,8 @@ def confirm_bank_payment(order, amount, reference=None):
 def generate_tag(length):
     return ''.join(choice(string.ascii_uppercase + string.digits)
                    for _ in range(length))
+
+
+def get_user_cart(user):
+    return Cart.objects.get_or_create(
+        ordered=False, user=user)

@@ -1,14 +1,18 @@
 import random
+import json
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from app_utils.response import success_response, error_response
-from products.models import Product, Cart, CartProduct, ProductType, Coupon
+from products.models import Product, Cart, CartProduct, ProductType, Coupon, Payment, Purchase
+from products.utils import get_user_cart, generate_reference
+from dispatching.models import DispatchAddress
+from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from .pagination import ProductsPagination
 from .serializers import (ProductSerializer, ProductDetailSerializer,
                           CartSerializer, ProductTypeSerializer, AddToCartSerializer, CouponSerializer,
-                          DeliveryDetailsSerializer)
+                          DeliveryDetailsSerializer, AddCouponSerializer)
 
 
 class ProductTypesAPIView(APIView):
@@ -68,8 +72,7 @@ class AddToCartAPIView(APIView):
                 return error_response("Product does not exist.")
             if product.available_stock == 0:
                 return error_response("Product out of stock")
-            user_cart, _ = Cart.objects.get_or_create(
-                user=request.user, ordered=False)
+            user_cart, _ = get_user_cart(request.user)
             if _:
                 cart_product = CartProduct.objects.create(
                     product=product,
@@ -116,7 +119,7 @@ class CartAPIView(APIView):
 
 class AddCouponAPIView(APIView):
     def post(self, request):
-        data = CouponSerializer(data=request.data)
+        data = AddCouponSerializer(data=request.data)
         if data.is_valid():
             code = data.validated_data.get("code")
             user_cart = Cart.objects.filter(
@@ -147,3 +150,83 @@ class DeliveryDetailsAPIView(APIView):
             ordered=False, user=request.user)
         data = DeliveryDetailsSerializer(user_cart).data
         return success_response(data=data)
+
+
+class FarmerProductsAPIView(APIView):
+    def get(self, request):
+        products = Product.objects.filter(farm__farmer=request.user)
+        data = ProductSerializer(products, many=True).data
+        return success_response(data=data)
+
+
+class UpdateDeliveryDetails(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, cart_id):
+        data = UpdateDeliveryDetailsSerializer(data=request.data)
+        if data.is_valid():
+            user_cart, _ = get_user_cart(request.user)
+            if user_cart.id != cart_id:
+                return error_response("Outdated cart information. Please refresh the page")
+            dispatch_address = user_cart.delivery_address
+            if dispatch_address:
+                print(dispatch_address, "former address")
+                dispatch_address.state = data.validated_data.get("state")
+                dispatch_address.street_address = data.validated_data.get(
+                    "street_address")
+                dispatch_address.save()
+            else:
+                dispatch_address = data.save()
+                print(dispatch_address, 'dispatch address')
+                user_cart.delivery_address = dispatch_address
+                user_cart.save()
+            if not user_cart.reference:
+                user_cart.reference = generate_reference()
+                user_cart.save()
+            return success_response(data=user_cart.reference)
+        return error_response(data.errors)
+
+
+class OrderCartAPIView(APIView):
+    def patch(self, request, cart_id):
+        user_cart, _ = get_user_cart(request.user)
+        if user_cart.id != cart_id:
+            return error_response("Outdated cart information. Please refresh the page")
+        user_cart.ordered = True
+        user_cart.ordered_date = timezone.now()
+        user_cart.save()
+        return success_response(message="Your order is being processed!.")
+
+
+class PayStackWebhookAPIView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        if data['event'] == 'charge.success':
+            payment_details = data.get("data")
+            metadata = payment_details.get("metadata")
+            print(metadata)
+            reference = metadata.get("reference")
+            order_id = metadata.get("order")
+            print(reference, order_id)
+            cart = Cart.objects.filter(
+                reference=reference, id=order_id).first()
+            if cart:
+                Payment.objects.create(
+                    amount=payment_details.get("amount"),
+                    reference=cart.reference,
+                    order=cart,
+                    customer=cart.user
+                )
+            else:
+                return error_response("Invalid payment")
+            cart_products = cart.items.all()
+            for item in cart_products:
+                Purchase.objects.create(
+                    product=item.product,
+                    quantity=item.quantity,
+                    amount=item.total_cost,
+                    customer=cart.user,
+                    farmer=item.product.farmer
+                )
+            return success_response(message="Payment Acknowledged")
+        return error_response("Error in payment")
