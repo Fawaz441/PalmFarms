@@ -29,6 +29,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     variations = models.ManyToManyField(ProductVariation, blank=True)
     tag = models.CharField(max_length=100, unique=True)
+    start_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -40,6 +41,8 @@ class Product(models.Model):
     @property
     def product_image(self):
         if self.image:
+            if settings.IS_DEV:
+                return f"{settings.BASE_URL}{self.image.url}"
             return self.image.url
         return None
 

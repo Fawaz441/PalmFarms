@@ -77,7 +77,6 @@ class DeliveryDetailsSerializer(ModelSerializer):
 
 
 class AddProductSerializer(ModelSerializer):
-    start_date = DateTimeField(required=False)
 
     class Meta:
         model = Product

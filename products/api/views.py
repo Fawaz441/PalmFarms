@@ -3,16 +3,19 @@ import json
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils import timezone
 from app_utils.response import success_response, error_response
 from products.models import Product, Cart, CartProduct, ProductType, Coupon, Payment, Purchase
-from products.utils import get_user_cart, generate_reference
+from products.utils import get_user_cart, generate_reference, generate_tag, get_farmer_farm
+from accounts.permissions import IsFarmerPermission
 from dispatching.models import DispatchAddress
 from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from .pagination import ProductsPagination
+
 from .serializers import (ProductSerializer, ProductDetailSerializer,
                           CartSerializer, ProductTypeSerializer, AddToCartSerializer, CouponSerializer,
-                          DeliveryDetailsSerializer, AddCouponSerializer)
+                          DeliveryDetailsSerializer, AddCouponSerializer, AddProductSerializer)
 
 
 class ProductTypesAPIView(APIView):
@@ -151,12 +154,22 @@ class DeliveryDetailsAPIView(APIView):
         data = DeliveryDetailsSerializer(user_cart).data
         return success_response(data=data)
 
+# for farmer alone
 
-class FarmerProductsAPIView(APIView):
+
+class FarmerProductsAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    pagination_class = ProductsPagination
+
     def get(self, request):
-        products = Product.objects.filter(farm__farmer=request.user)
-        data = ProductSerializer(products, many=True).data
-        return success_response(data=data)
+        filters = {}
+        product_type = request.GET.get("product_type")
+        if product_type and product_type != 'all':
+            filters['type__name'] = product_type
+        queryset = Product.objects.filter(farm__farmer=request.user, **filters)
+        serializer = ProductSerializer(queryset, many=True)
+        page = self.paginate_queryset(serializer.data)
+        return success_response(data=self.get_paginated_response(page))
 
 
 class UpdateDeliveryDetails(APIView):
@@ -230,3 +243,19 @@ class PayStackWebhookAPIView(APIView):
                 )
             return success_response(message="Payment Acknowledged")
         return error_response("Error in payment")
+
+
+class AddProductAPIView(APIView, IsFarmerPermission):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        data = AddProductSerializer(data=request.data)
+        if data.is_valid():
+            product = Product(**data.validated_data)
+            product.tag = generate_tag(10)
+            if data.validated_data.get("start_date"):
+                product.is_active = False
+            product.farm = get_farmer_farm(request.user)
+            product.save()
+            return success_response(message="Product created successfully")
+        return error_response(data.errors)
