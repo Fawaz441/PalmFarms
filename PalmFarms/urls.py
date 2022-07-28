@@ -23,6 +23,10 @@ urlpatterns = [
     path("api/v1/consulting/", include(("consulting.api.urls", "consulting"))),
     path("api/v1/products/", include(("products.api.urls", "products-api"))),
     path("api/v1/dispatching/", include(("dispatching.api.urls", "dispatching"))),
+
+    path("api/v1/farms/", include(("accounts.api.farm_urls", "farm"))),
+
+
 ]
 
 if settings.DEBUG:

@@ -62,7 +62,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             user.save()
             if self.validated_data.get('user_type') == FARMER:
                 Farm.objects.create(
-                    name=f'{user.first_name} {user.last_name} Farmers',
+                    name=f"{user.first_name} {user.last_name}'s Farm",
                     farmer=user
                 )
             send_welcome_sms(user, password)
@@ -77,3 +77,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'first_name', 'last_name', 'phone_number',
                   'profile_pic', 'user_type',)
+
+
+class FarmSerializer(serializers.ModelSerializer):
+    farmer = UserSerializer()
+
+    class Meta:
+        model = Farm
+        fields = ('id', 'name', 'farmer', 'views', 'total_sales')
