@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Farm, FAQ, ContactMessage
+from .models import User, Farm, FAQ, ContactMessage, NewsLetterMember
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -15,3 +15,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Farm)
 admin.site.register(FAQ)
 admin.site.register(ContactMessage, ContactMessageAdmin)
+admin.site.register(NewsLetterMember)

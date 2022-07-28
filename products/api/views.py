@@ -166,7 +166,8 @@ class FarmerProductsAPIView(ListAPIView):
         product_type = request.GET.get("product_type")
         if product_type and product_type != 'all':
             filters['type__name'] = product_type
-        queryset = Product.objects.filter(farm__farmer=request.user, **filters)
+        queryset = Product.objects.filter(
+            farm__farmer=request.user, **filters).order_by('-created')
         serializer = ProductSerializer(queryset, many=True)
         page = self.paginate_queryset(serializer.data)
         return success_response(data=self.get_paginated_response(page))

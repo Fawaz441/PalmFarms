@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.api.views import CustomRegisterView, CustomLoginView, CustomLogoutView
+from accounts.api.views import CustomRegisterView, CustomLoginView, CustomLogoutView, NewsLetterSignUpAPIView
 
 from PalmFarms.views import LandingPage, AboutPage, FAQPage, ContactUsPage
 
@@ -23,8 +23,8 @@ urlpatterns = [
     path("api/v1/consulting/", include(("consulting.api.urls", "consulting"))),
     path("api/v1/products/", include(("products.api.urls", "products-api"))),
     path("api/v1/dispatching/", include(("dispatching.api.urls", "dispatching"))),
-
     path("api/v1/farms/", include(("accounts.api.farm_urls", "farm"))),
+    path("api/v1/newsletter/", NewsLetterSignUpAPIView.as_view()),
 
 
 ]

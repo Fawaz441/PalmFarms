@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from rest_auth.models import TokenModel
 from phonenumber_field.modelfields import PhoneNumberField
 from payments.models import Wallet, BankAccount
 
@@ -84,6 +85,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.full_name
 
+    @property
+    def token(self):
+        token, _ = TokenModel.objects.get_or_create(user=self)
+        return token.key
+
 
 class Farm(models.Model):
     name = models.CharField(max_length=200)
@@ -123,3 +129,10 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return self.first_name
+
+
+class NewsLetterMember(models.Model):
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.email
