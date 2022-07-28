@@ -245,7 +245,8 @@ class PayStackWebhookAPIView(APIView):
         return error_response("Error in payment")
 
 
-class AddProductAPIView(APIView, IsFarmerPermission):
+class AddProductAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request):
