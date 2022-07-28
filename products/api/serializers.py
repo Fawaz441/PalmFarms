@@ -1,4 +1,5 @@
-from rest_framework.serializers import Serializer, ModelSerializer, IntegerField, CharField
+from rest_framework.serializers import (
+    Serializer, ModelSerializer, IntegerField, CharField, DateTimeField)
 from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from products.models import (
     Product, ProductType, ProductVariation, Cart, CartProduct, Coupon)
@@ -73,3 +74,12 @@ class DeliveryDetailsSerializer(ModelSerializer):
     class Meta:
         model = Cart
         fields = ["first_name", "last_name", "phone", "delivery_address"]
+
+
+class AddProductSerializer(ModelSerializer):
+    start_date = DateTimeField(required=False)
+
+    class Meta:
+        model = Product
+        fields = ['name', 'cost_price', 'selling_price',
+                  'description', 'available_stock', 'type', 'image', 'start_date']

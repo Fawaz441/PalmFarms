@@ -40,8 +40,6 @@ class Product(models.Model):
     @property
     def product_image(self):
         if self.image:
-            if settings.IS_DEV:
-                return settings.BASE_URL + self.image.url
             return self.image.url
         return None
 

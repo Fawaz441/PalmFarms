@@ -12,4 +12,5 @@ DATABASES = {
     }
 }
 
+
 django_heroku.settings(locals())
