@@ -56,7 +56,8 @@ class ProductDetailAPIView(APIView):
                 return error_response("Product not found")
             random_products = list(Product.objects.exclude(
                 tag=tag).filter(type=product.type))
-            random_products = random.sample(random_products, 4)
+            if len(random_products) > 4:
+                random_products = random.sample(random_products, 4)
             data = {'data': ProductDetailSerializer(
                 product).data, 'similar_products': ProductSerializer(random_products, many=True).data}
             return success_response(data)
