@@ -90,11 +90,14 @@ class Farm(models.Model):
     farmer = models.ForeignKey(
         User, related_name='farms', on_delete=models.CASCADE)
 
+    views = models.PositiveIntegerField(default=0)
+    total_sales = models.FloatField(default=0)
+
     class Meta:
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return f'{self.name} | Views : {self.views} | Sales : {self.total_sales}'
 
     @property
     def sample_products(self):
