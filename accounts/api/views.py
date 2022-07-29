@@ -10,7 +10,7 @@ from django.utils import timezone
 from rest_framework.status import HTTP_200_OK
 from accounts.permissions import IsFarmerPermission
 from products.utils import get_farmer_farm
-from products.models import Purchase, Product
+from products.models import Purchase, Product, ProductType
 from .serializers import RegistrationSerializer, LoginSerializer
 
 
@@ -50,15 +50,33 @@ class FarmDetailView(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request):
-        farm_id = request.GET.get('id')
-        farm_obj = Farm.objects.get(id=int(farm_id))
+        if request.GET.get('id') and not request.GET.get('type'):
+            farm_id = request.GET.get('id')
+            farm_obj = Farm.objects.get(id=int(farm_id))
 
-        # Add views to the farm_obj
-        farm_obj.views += 1
-        farm_obj.save()
+            # Add views to the farm_obj
+            farm_obj.views += 1
+            farm_obj.save()
 
-        data = FarmSerializer(farm_obj).data
-        return Response({'data': data}, status=HTTP_200_OK)
+            data = FarmSerializer(farm_obj).data
+            return Response({'data': data}, status=HTTP_200_OK)
+
+        if not request.GET.get('id') and not request.GET.get('type'):
+            all_farms = Farm.objects.all().order_by("name")
+            data = FarmSerializer(
+                all_farms, many=True).data
+            return Response({'data': data}, status=HTTP_200_OK)
+
+        if request.GET.get('type') and not request.GET.get('id'):
+            type_ = request.GET.get('type')
+            farm_type = ProductType.objects.filter(name__iexact=type_).first()
+            if farm_type:
+                farm_data = Farm.objects.filter(farm_products__type=farm_type)
+                data = FarmSerializer(farm_data, many=True).data
+                return Response({'data': data}, status=HTTP_200_OK)
+            else:
+                return Response({'data': []}, status=HTTP_200_OK)
+
 
 
 class TopFarmersView(APIView):
