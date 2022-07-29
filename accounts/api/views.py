@@ -8,11 +8,14 @@ from app_utils.response import success_response, error_response
 from app_utils.time import get_midnight, date_hour, date_month
 from rest_framework.response import Response
 from django.utils import timezone
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from accounts.permissions import IsFarmerPermission
 from products.utils import get_farmer_farm
 from products.models import Purchase, Product, ProductType
 from .serializers import RegistrationSerializer, LoginSerializer
+from .pagination import FarmsPagination
+from app_utils.response import success_response, error_response
+from rest_framework.generics import ListAPIView
 
 
 class CustomRegisterView(APIView):
@@ -51,30 +54,53 @@ class FarmDetailView(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request):
-        if request.GET.get('id') and not request.GET.get('type'):
+        if request.GET.get('id'):
             farm_id = request.GET.get('id')
             farm_obj = Farm.objects.get(id=int(farm_id))
 
-            # Add views to the farm_obj
-            farm_obj.views += 1
-            farm_obj.save()
+            if farm_obj:
+                # Add views to the farm_obj
+                farm_obj.views += 1
+                farm_obj.save()
 
-            data = FarmSerializer(farm_obj).data
-            return Response({'data': data}, status=HTTP_200_OK)
+                serializer = FarmSerializer(
+                    farm_obj)
+                data = serializer.data
+                return Response({"data": data}, status=HTTP_200_OK)
+            else:
+                return Response({"data": []},status=HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "You need to pass a farm ID"}, status=HTTP_400_BAD_REQUEST)
 
-        if not request.GET.get('id') and not request.GET.get('type'):
+
+class FarmListView(ListAPIView):
+    permission_classes = (AllowAny, )
+    pagination_class = FarmsPagination
+
+    def get(self, request):
+        if not request.GET.get('type'):
             all_farms = Farm.objects.all().order_by("name")
-            data = FarmSerializer(
-                all_farms, many=True).data
-            return Response({'data': data}, status=HTTP_200_OK)
+            serializer = FarmSerializer(
+                all_farms, many=True)
+            page = self.paginate_queryset(serializer.data)
+            return success_response(data=self.get_paginated_response(page))
 
-        if request.GET.get('type') and not request.GET.get('id'):
+        if request.GET.get('type'):
             type_ = request.GET.get('type')
+            print("type", type_)
             farm_type = ProductType.objects.filter(name__iexact=type_).first()
-            if farm_type:
+            if farm_type and type_.lower() != "all":
                 farm_data = Farm.objects.filter(farm_products__type=farm_type)
-                data = FarmSerializer(farm_data, many=True).data
-                return Response({'data': data}, status=HTTP_200_OK)
+                serializer = FarmSerializer(
+                    farm_data, many=True)
+                page = self.paginate_queryset(serializer.data)
+                return success_response(data=self.get_paginated_response(page))
+            elif type_.lower() == "all":
+                all_farms = Farm.objects.all().order_by("name")
+                serializer = FarmSerializer(
+                    all_farms, many=True)
+                page = self.paginate_queryset(serializer.data)
+                return success_response(data=self.get_paginated_response(page))
             else:
                 return Response({'data': []}, status=HTTP_200_OK)
 
