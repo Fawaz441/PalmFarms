@@ -175,7 +175,6 @@ class FarmerProductsAPIView(ListAPIView):
             page = self.paginate_queryset(serializer.data)
             return success_response(data=self.get_paginated_response(page))
         if farm_id:
-            print("here abbysbhs")
             if product_type and product_type != 'all':
                 filters['type__name'] = product_type
             selected_farm = Farm.objects.get(id=farm_id)
