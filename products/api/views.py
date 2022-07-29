@@ -12,7 +12,7 @@ from accounts.permissions import IsFarmerPermission
 from dispatching.models import DispatchAddress
 from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from .pagination import ProductsPagination
-
+from accounts.models import Farm
 from .serializers import (ProductSerializer, ProductDetailSerializer,
                           CartSerializer, ProductTypeSerializer, AddToCartSerializer, CouponSerializer,
                           DeliveryDetailsSerializer, AddCouponSerializer, AddProductSerializer)
@@ -165,13 +165,25 @@ class FarmerProductsAPIView(ListAPIView):
     def get(self, request):
         filters = {}
         product_type = request.GET.get("product_type")
-        if product_type and product_type != 'all':
-            filters['type__name'] = product_type
-        queryset = Product.objects.filter(
-            farm__farmer=request.user, **filters).order_by('-created')
-        serializer = ProductSerializer(queryset, many=True)
-        page = self.paginate_queryset(serializer.data)
-        return success_response(data=self.get_paginated_response(page))
+        farm_id = request.GET.get("farm_id")
+        if not farm_id:
+            if product_type and product_type != 'all':
+                filters['type__name'] = product_type
+            queryset = Product.objects.filter(
+                farm__farmer=request.user, **filters).order_by('-created')
+            serializer = ProductSerializer(queryset, many=True)
+            page = self.paginate_queryset(serializer.data)
+            return success_response(data=self.get_paginated_response(page))
+        if farm_id:
+            print("here abbysbhs")
+            if product_type and product_type != 'all':
+                filters['type__name'] = product_type
+            selected_farm = Farm.objects.get(id=farm_id)
+            queryset = Product.objects.filter(
+                farm=selected_farm, **filters).order_by('-created')
+            serializer = ProductSerializer(queryset, many=True)
+            page = self.paginate_queryset(serializer.data)
+            return success_response(data=self.get_paginated_response(page))
 
 
 class UpdateDeliveryDetails(APIView):
