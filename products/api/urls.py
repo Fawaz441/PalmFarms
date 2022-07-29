@@ -3,7 +3,7 @@ from .views import (ProductsListAPIView, FeaturedProductsAPIView,
                     ProductDetailAPIView, AddToCartAPIView, ProductTypesAPIView,
                     CartAPIView, RemoveFromCartAPIView, AddCouponAPIView, DeliveryDetailsAPIView,
                     FarmerProductsAPIView, UpdateDeliveryDetails, OrderCartAPIView, PayStackWebhookAPIView,
-                    AddProductAPIView)
+                    AddProductAPIView, PurchasesListAPIView)
 
 urlpatterns = [
     path('', ProductsListAPIView.as_view()),
@@ -22,5 +22,6 @@ urlpatterns = [
     path('order-cart/<int:cart_id>', OrderCartAPIView.as_view()),
     path('paystack/dahdoefyr3eu9hcdsigrsdlf',
          PayStackWebhookAPIView.as_view()),
-    path('add-product', AddProductAPIView.as_view())
+    path('add-product', AddProductAPIView.as_view()),
+    path('purchases', PurchasesListAPIView.as_view())
 ]

@@ -1,9 +1,16 @@
 from django.db import models
+from app_utils.constants import PENDING, FAILED, SETTLED
 
 WITHDRAWAL_REQUEST_STATES = (
     ("WITHDRAWN", "WITHDRAWN"),
     ("REJECTED", "REJECTED"),
     ("PENDING", "PENDING"),
+)
+
+SETTLEMENT_STATES = (
+    (PENDING, PENDING),
+    (FAILED, FAILED),
+    (SETTLED, SETTLED),
 )
 
 
@@ -46,3 +53,12 @@ class BankAccount(models.Model):
 
     def __str__(self):
         return self.bank_name
+
+
+class FarmerSettlement(models.Model):
+    purchase = models.ForeignKey(
+        "products.Purchase", on_delete=models.SET_NULL, blank=True, null=True)
+    status = models.CharField(
+        max_length=20, choices=SETTLEMENT_STATES, default=PENDING)
+    updated = models.DateTimeField(auto_now_add=True)
+    success_timestamp = models.DateTimeField(blank=True, null=True)

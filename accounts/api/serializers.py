@@ -57,11 +57,15 @@ class RegistrationSerializer(serializers.Serializer):
         raise serializers.ValidationError("Invalid phone number")
 
     def save(self):
+        full_name = first_name = self.validated_data.get(
+            'first_name', " ") + " " + self.validated_data.get('last_name', " "),
         user = User(
             phone_number=self.validated_data['phone_number'],
             first_name=self.validated_data['first_name'],
             last_name=self.validated_data['last_name'],
             user_type=self.validated_data['user_type'],
+            full_name=full_name
+
         )
 
         password = self.validated_data['password']

@@ -15,7 +15,8 @@ from .pagination import ProductsPagination
 
 from .serializers import (ProductSerializer, ProductDetailSerializer,
                           CartSerializer, ProductTypeSerializer, AddToCartSerializer, CouponSerializer,
-                          DeliveryDetailsSerializer, AddCouponSerializer, AddProductSerializer)
+                          DeliveryDetailsSerializer, AddCouponSerializer, AddProductSerializer,
+                          PurchaseSerializer)
 
 
 class ProductTypesAPIView(APIView):
@@ -262,3 +263,14 @@ class AddProductAPIView(APIView):
             product.save()
             return success_response(message="Product created successfully")
         return error_response(data.errors)
+
+
+class PurchasesListAPIView(ListAPIView):
+    permission_classes = [IsFarmerPermission]
+    pagination_class = ProductsPagination
+
+    def get(self, request, *args, **kwargs):
+        queryset = Purchase.objects.filter(farmer=request.user)
+        serializer = PurchaseSerializer(queryset, many=True)
+        page = self.paginate_queryset(serializer.data)
+        return success_response(data=self.get_paginated_response(page))
