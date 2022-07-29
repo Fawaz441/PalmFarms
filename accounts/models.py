@@ -83,7 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.user_type == PALM_RETAILER
 
     def __str__(self):
-        return self.full_name
+        return self.full_name + " -- " + str(self.phone_number)
 
     @property
     def token(self):
