@@ -1,10 +1,11 @@
+from django.db.models import Sum
 from rest_auth.views import LoginView, LogoutView, APIView
 from rest_auth.registration.views import RegisterView
 from .serializers import UserSerializer, FarmSerializer, NewsLetterMemberSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from ..models import Farm, NewsLetterMember, User, FarmView
 from app_utils.response import success_response, error_response
-from app_utils.time import get_midnight
+from app_utils.time import get_midnight, date_hour, date_month
 from rest_framework.response import Response
 from django.utils import timezone
 from rest_framework.status import HTTP_200_OK
@@ -76,7 +77,6 @@ class FarmDetailView(APIView):
                 return Response({'data': data}, status=HTTP_200_OK)
             else:
                 return Response({'data': []}, status=HTTP_200_OK)
-
 
 
 class TopFarmersView(APIView):
@@ -170,3 +170,40 @@ class NumberOfFarmViewsAPIView(APIView):
         if duration == YEAR:
             views = FarmView.objects.filter(viewed_time__year=now.year)
             return success_response(data={'views': views.count()})
+
+
+class SalesAggregateAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
+
+    def get(self, request):
+        farm = get_farmer_farm(request.user)
+        duration = request.GET.get("duration")
+        data = {}
+        now = timezone.now()
+        if duration == DAY:
+            midnight = get_midnight()
+            for hour in range(midnight.hour, now.hour+1):
+                timestamp = timezone.datetime(
+                    now.year, now.month, now.day, hour, 0, 0)
+                sales = Purchase.objects.filter(
+                    time__day=now.day, time__month=now.month, time__year=now.year, time__hour=hour) \
+                    .aggregate(total=Sum('amount')).get('total') or 0
+                data[date_hour(timestamp)] = sales
+            return success_response(data=data)
+        if duration == MONTH:
+            year = now.year
+            for month in range(1, now.month + 1):
+                timestamp = timezone.datetime(now.year, month, 1)
+                sales = Purchase.objects.filter(
+                    time__month=month, time__year=now.year,) \
+                    .aggregate(total=Sum('amount')).get('total') or 0
+                data[date_month(timestamp)] = sales
+            return success_response(data=data)
+        if duration == YEAR:
+            for year in range(2022, now.year+1):
+                sales = Purchase.objects.filter(
+                    time__year=year) \
+                    .aggregate(total=Sum('amount')).get('total') or 0
+                data[year] = sales
+            return success_response(data=data)
+        return error_response("Invalid year")

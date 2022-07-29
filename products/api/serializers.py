@@ -5,6 +5,7 @@ from products.models import (
     Product, ProductType, ProductVariation, Cart, CartProduct, Coupon)
 from accounts.api.serializers import FarmSerializer
 
+
 class AddToCartSerializer(Serializer):
     quantity = IntegerField()
 
@@ -20,7 +21,7 @@ class ProductSerializer(ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["name", "selling_price", "farm",
+        fields = ["name", "selling_price", "farm", "cost_price",
                   "product_image", "type", "discount", "id", "tag", "description", "available_stock"]
 
 
