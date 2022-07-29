@@ -3,7 +3,7 @@ from rest_framework.serializers import (
 from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from products.models import (
     Product, ProductType, ProductVariation, Cart, CartProduct, Coupon)
-
+from accounts.api.serializers import FarmSerializer
 
 class AddToCartSerializer(Serializer):
     quantity = IntegerField()
@@ -16,10 +16,12 @@ class VariationSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
+    farm = FarmSerializer()
+
     class Meta:
         model = Product
-        fields = ["name", "selling_price",
-                  "product_image", "type", "discount", "id", "tag", "description"]
+        fields = ["name", "selling_price", "farm",
+                  "product_image", "type", "discount", "id", "tag", "description", "available_stock"]
 
 
 class ProductTypeSerializer(ModelSerializer):
@@ -30,10 +32,11 @@ class ProductTypeSerializer(ModelSerializer):
 
 class ProductDetailSerializer(ModelSerializer):
     variations = VariationSerializer(many=True)
+    farm = FarmSerializer()
 
     class Meta:
         model = Product
-        fields = ["name", "selling_price",
+        fields = ["name", "selling_price", "farm",
                   "product_image", "type", "discount", "id", "tag", "description", "variations"]
 
 
