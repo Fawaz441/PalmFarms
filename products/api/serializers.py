@@ -1,5 +1,5 @@
 from rest_framework.serializers import (
-    Serializer, ModelSerializer, IntegerField, CharField, DateTimeField)
+    Serializer, ModelSerializer, IntegerField, CharField, DateTimeField, SerializerMethodField)
 from dispatching.api.serializers import UpdateDeliveryDetailsSerializer
 from products.models import (
     Product, ProductType, ProductVariation, Cart, CartProduct, Coupon, Purchase)
@@ -18,10 +18,11 @@ class VariationSerializer(ModelSerializer):
 
 class ProductSerializer(ModelSerializer):
     farm = FarmSerializer()
+    # start_date = SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ["name", "selling_price", "farm", "cost_price",
+        fields = ["name", "selling_price", "farm", "cost_price", "is_active", "start_date",
                   "product_image", "type", "discount", "id", "tag", "description", "available_stock"]
 
 
@@ -94,3 +95,10 @@ class PurchaseSerializer(ModelSerializer):
     class Meta:
         model = Purchase
         fields = ["product", "quantity", "amount", "customer", "time", "id"]
+
+
+class EditProductSerializer(ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["name", "selling_price", "cost_price", "is_active", "start_date",
+                  "product_image", "description", "available_stock"]

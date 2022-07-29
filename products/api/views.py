@@ -16,7 +16,7 @@ from accounts.models import Farm
 from .serializers import (ProductSerializer, ProductDetailSerializer,
                           CartSerializer, ProductTypeSerializer, AddToCartSerializer, CouponSerializer,
                           DeliveryDetailsSerializer, AddCouponSerializer, AddProductSerializer,
-                          PurchaseSerializer)
+                          PurchaseSerializer, EditProductSerializer)
 
 
 class ProductTypesAPIView(APIView):
@@ -273,6 +273,21 @@ class AddProductAPIView(APIView):
             product.farm = get_farmer_farm(request.user)
             product.save()
             return success_response(message="Product created successfully")
+        return error_response(data.errors)
+
+
+class EditProductAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        data = EditProductSerializer(data=request.data)
+        if data.is_valid():
+            id = request.data.get("id")
+            product = Product.objects.filter(id=id)
+            if product:
+                product.update(**data.validated_data)
+            return success_response(message="Successfully edited")
         return error_response(data.errors)
 
 
