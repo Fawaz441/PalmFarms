@@ -110,6 +110,11 @@ class Farm(models.Model):
         return self.farm_products.all()[:5]
 
 
+class FarmView(models.Model):
+    farm = models.ForeignKey(Farm, on_delete=models.CASCADE)
+    viewed_time = models.DateTimeField(auto_now=True)
+
+
 class FAQ(models.Model):
     question = models.TextField()
     answer = models.TextField()

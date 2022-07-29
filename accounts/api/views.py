@@ -2,10 +2,15 @@ from rest_auth.views import LoginView, LogoutView, APIView
 from rest_auth.registration.views import RegisterView
 from .serializers import UserSerializer, FarmSerializer, NewsLetterMemberSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from ..models import Farm, NewsLetterMember, User
+from ..models import Farm, NewsLetterMember, User, FarmView
 from app_utils.response import success_response, error_response
+from app_utils.time import get_midnight
 from rest_framework.response import Response
+from django.utils import timezone
 from rest_framework.status import HTTP_200_OK
+from accounts.permissions import IsFarmerPermission
+from products.utils import get_farmer_farm
+from products.models import Purchase, Product
 from .serializers import RegistrationSerializer, LoginSerializer
 
 
@@ -91,3 +96,59 @@ class NewsLetterSignUpAPIView(APIView):
             data.save()
             return success_response(message="Thank you for signing up to your newsletter!")
         return error_response(data.errors)
+
+
+DAY = "day"
+MONTH = "month"
+YEAR = "year"
+
+
+class DashboardAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
+
+    def get(self, request):
+        farm = get_farmer_farm(request.user)
+        active_products = Product.objects.filter(
+            farm=farm, is_active=True).count()
+        return success_response(data={"active_products": active_products})
+
+
+class NumberOfSalesAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
+
+    def get(self, request):
+        duration = request.GET.get("duration")
+        if duration == DAY:
+            sales = Purchase.objects.filter(
+                farmer=request.user, time__gte=get_midnight()
+            )
+            return success_response(data={'sales': sales.count()})
+        now = timezone.now()
+        if duration == MONTH:
+            sales = Purchase.objects.filter(
+                time__month=now.month, time__year=now.year)
+            return success_response(data={'sales': sales.count()})
+        if duration == YEAR:
+            sales = Purchase.objects.filter(time__year=now.year)
+            return success_response(data={'sales': sales.count()})
+
+
+class NumberOfFarmViewsAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
+
+    def get(self, request):
+        farm = get_farmer_farm(request.user)
+        duration = request.GET.get("duration")
+        if duration == DAY:
+            views = FarmView.objects.filter(
+                farm=farm, viewed_time=get_midnight()
+            )
+            return success_response(data={'views': views.count()})
+        now = timezone.now()
+        if duration == MONTH:
+            views = FarmView.objects.filter(
+                viewed_time__month=now.month, viewed_time__year=now.year)
+            return success_response(data={'views': views.count()})
+        if duration == YEAR:
+            views = FarmView.objects.filter(viewed_time__year=now.year)
+            return success_response(data={'views': views.count()})
