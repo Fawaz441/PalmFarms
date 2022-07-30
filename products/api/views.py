@@ -287,6 +287,12 @@ class EditProductAPIView(APIView):
             product = Product.objects.filter(id=id)
             if product:
                 product.update(**data.validated_data)
+            product = product.first()
+            image = data.validated_data.get("image")
+            if image:
+                print("There is an image")
+                product.image = image
+                product.save()
             return success_response(message="Successfully edited")
         return error_response(data.errors)
 

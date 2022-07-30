@@ -101,4 +101,4 @@ class EditProductSerializer(ModelSerializer):
     class Meta:
         model = Product
         fields = ["name", "selling_price", "cost_price", "is_active", "start_date",
-                  "product_image", "description", "available_stock"]
+                  "image", "description", "available_stock"]

@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (FarmDetailView, TopFarmersView, DashboardAPIView,
-                    NumberOfSalesAPIView, NumberOfFarmViewsAPIView, SalesAggregateAPIView, FarmListView)
+                    NumberOfSalesAPIView, NumberOfFarmViewsAPIView, SalesAggregateAPIView,
+                    FarmListView, FinancialScoreAPIView)
 
 urlpatterns = [
     path("", FarmListView.as_view()),
@@ -10,4 +11,5 @@ urlpatterns = [
     path("sales", NumberOfSalesAPIView.as_view()),
     path("views", NumberOfFarmViewsAPIView.as_view()),
     path("sales-summary", SalesAggregateAPIView.as_view()),
+    path('fin-score', FinancialScoreAPIView.as_view())
 ]

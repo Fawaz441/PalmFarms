@@ -68,7 +68,7 @@ class FarmDetailView(APIView):
                 data = serializer.data
                 return Response({"data": data}, status=HTTP_200_OK)
             else:
-                return Response({"data": []},status=HTTP_404_NOT_FOUND)
+                return Response({"data": []}, status=HTTP_404_NOT_FOUND)
         else:
             return Response({"error": "You need to pass a farm ID"}, status=HTTP_400_BAD_REQUEST)
 
@@ -170,10 +170,12 @@ class NumberOfSalesAPIView(APIView):
         now = timezone.now()
         if duration == MONTH:
             sales = Purchase.objects.filter(
+                farmer=request.user,
                 time__month=now.month, time__year=now.year)
             return success_response(data={'sales': sales.count()})
         if duration == YEAR:
-            sales = Purchase.objects.filter(time__year=now.year)
+            sales = Purchase.objects.filter(
+                farmer=request.user, time__year=now.year)
             return success_response(data={'sales': sales.count()})
 
 
@@ -191,10 +193,11 @@ class NumberOfFarmViewsAPIView(APIView):
         now = timezone.now()
         if duration == MONTH:
             views = FarmView.objects.filter(
-                viewed_time__month=now.month, viewed_time__year=now.year)
+                viewed_time__month=now.month, viewed_time__year=now.year, farm=farm)
             return success_response(data={'views': views.count()})
         if duration == YEAR:
-            views = FarmView.objects.filter(viewed_time__year=now.year)
+            views = FarmView.objects.filter(
+                viewed_time__year=now.year, farm=farm)
             return success_response(data={'views': views.count()})
 
 
@@ -212,6 +215,7 @@ class SalesAggregateAPIView(APIView):
                 timestamp = timezone.datetime(
                     now.year, now.month, now.day, hour, 0, 0)
                 sales = Purchase.objects.filter(
+                    farmer=request.user,
                     time__day=now.day, time__month=now.month, time__year=now.year, time__hour=hour) \
                     .aggregate(total=Sum('amount')).get('total') or 0
                 data[date_hour(timestamp)] = sales
@@ -221,6 +225,7 @@ class SalesAggregateAPIView(APIView):
             for month in range(1, now.month + 1):
                 timestamp = timezone.datetime(now.year, month, 1)
                 sales = Purchase.objects.filter(
+                    farmer=request.user,
                     time__month=month, time__year=now.year,) \
                     .aggregate(total=Sum('amount')).get('total') or 0
                 data[date_month(timestamp)] = sales
@@ -228,8 +233,42 @@ class SalesAggregateAPIView(APIView):
         if duration == YEAR:
             for year in range(2022, now.year+1):
                 sales = Purchase.objects.filter(
+                    farmer=request.user,
                     time__year=year) \
                     .aggregate(total=Sum('amount')).get('total') or 0
                 data[year] = sales
             return success_response(data=data)
         return error_response("Invalid year")
+
+
+class FinancialScoreAPIView(APIView):
+    permission_classes = [IsFarmerPermission]
+
+    def get(self, request):
+        target = 10000
+        started_date = request.user.date_joined
+        total_sales = 0
+        total_target = 0
+        now = timezone.now()
+
+        for year in range(started_date.year, now.year+1):
+            if year == started_date.year:
+                first_month = started_date.month
+            else:
+                first_month = 1
+            for month in range(first_month, 13):
+                total_target += target
+                total_sales += Purchase.objects.filter(time__month=month, time__year=year).aggregate(
+                    total=Sum('amount')).get("total") or 0
+        fin_score = (total_sales/total_target) * 100
+        midnight = get_midnight()
+        sales_in_current_month = Purchase.objects.filter(time__month=now.month, time__year=now.year).aggregate(
+            total=Sum('amount')).get("total") or 0
+        sales_in_current_year = Purchase.objects.filter(time__year=now.year).aggregate(
+            total=Sum('amount')).get("total") or 0
+        return success_response(data={
+            'fin_score': fin_score,
+            'sales_in_current_month': sales_in_current_month,
+            "sales_in_current_year": sales_in_current_year,
+            "eligible_for_loan": fin_score > 75
+        })

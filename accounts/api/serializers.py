@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from ..models import User, FARMER, Farm, NewsLetterMember
 from django.db.utils import IntegrityError
+from django.utils import timezone
 from ..utils import send_welcome_sms
 
 
@@ -57,15 +58,16 @@ class RegistrationSerializer(serializers.Serializer):
         raise serializers.ValidationError("Invalid phone number")
 
     def save(self):
-        full_name = first_name = self.validated_data.get(
-            'first_name', " ") + " " + self.validated_data.get('last_name', " "),
+        first_name = self.validated_data.get("first_name", "")
+        last_name = self.validated_data.get("last_name", "")
+        full_name = first_name + " " + last_name
         user = User(
             phone_number=self.validated_data['phone_number'],
             first_name=self.validated_data['first_name'],
             last_name=self.validated_data['last_name'],
             user_type=self.validated_data['user_type'],
-            full_name=full_name
-
+            full_name=full_name,
+            date_joined=timezone.now()
         )
 
         password = self.validated_data['password']

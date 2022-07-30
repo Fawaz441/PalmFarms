@@ -68,6 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     wallet = models.OneToOneField(
         Wallet, on_delete=models.SET_NULL, related_name="user", null=True, blank=True)
     bank_accounts = models.ManyToManyField(BankAccount, blank=True)
+    date_joined = models.DateTimeField(null=True, blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'phone_number'
